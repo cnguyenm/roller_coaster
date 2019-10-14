@@ -10,13 +10,19 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
-#include <GL/glut.h>
+#include <GL/freeglut.h>
+#include <GL/glui.h>
+
 #include <math.h>
 
 #include "Camera.h"
 #include "Vec3.h"
 #include "Color.h"
 #include "GameObject.h"
-
+#include "Gate.h"
+#include "RollerTrack.h"
+#include "Bezier.h"
+#include "gui.h"
+#include "play.h"
 
 #endif //PCH_H

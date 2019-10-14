@@ -1,9 +1,37 @@
 #include "pch.h"
 #include <iostream>
 
+#include <gameshare.h>
+
+int _edit_win;
 Camera _edit_cam;
-Color _GREEN = Color(0, 1, 0);
-Color _WHITE = Color(1, 1, 1);
+Gate gate1;
+RollerTrack track1;
+
+void update_edit_window() {
+	glutSetWindow(_edit_win);
+	glutPostRedisplay();
+}
+
+void handle_keyboard(unsigned char key, int x, int y) {
+
+	//printf("%c \n", key);
+	switch (key)
+	{
+	case 'a':
+		_edit_cam.move_left(2); break;
+	case 'd':
+		_edit_cam.move_right(2); break;
+	case 'w':
+		_edit_cam.move_up(2); break;		
+	case 's':
+		_edit_cam.move_down(2); break;
+	default:
+		break;
+	}
+	update_edit_window();
+}
+
 
 inline void draw_axis() {
 
@@ -51,9 +79,9 @@ inline void draw_cube() {
 	glMatrixMode(GL_MODELVIEW);
 	
 	glPushMatrix();
+	glLoadIdentity();
 
 		// --- draw 
-		glLoadIdentity();
 		_edit_cam.apply();
 
 		_GREEN.apply();
@@ -61,6 +89,74 @@ inline void draw_cube() {
 		glutWireCube(1);
 		// --- /draw
 
+	glPopMatrix();
+}
+
+inline void draw_gate() {
+
+	double h = 3.0;  // height
+	double w = 6.0;  // width
+	double d = 4.0;  // depth
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	_edit_cam.apply();
+	// --- draw 
+	// position counter-clock wise, with normal pointing out
+	// for lighting
+	glBegin(GL_QUADS);
+
+		// left
+		_BLUE.apply();
+		glVertex3d(-w/2, 0, 0);
+		glVertex3d(-w/2, h, 0);
+		glVertex3d(-w/2, h, -d);
+		glVertex3d(-w/2, 0, -d);
+
+		// right
+		_YELLOW.apply();
+		glVertex3d(w/2, 0, -d);
+		glVertex3d(w/2, h, -d);
+		glVertex3d(w/2, h, 0);
+		glVertex3d(w/2, 0, 0);
+
+		// top
+		_RED.apply();
+		glVertex3d(w/2, h, 0);
+		glVertex3d(w/2, h, -d);
+		glVertex3d(-w/2, h, -d);
+		glVertex3d(-w/2, h, 0);
+
+	glEnd();
+	// --- /draw
+	glPopMatrix();
+
+}
+
+void draw_line() {
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	_edit_cam.apply();
+
+
+	// --- draw 
+	
+	glBegin(GL_LINES);
+	_GREEN.apply();
+
+		//1st line
+		glVertex3d(-10, 3, 0);
+		glVertex3d(  3, 3, 0);
+
+		//2nd line
+		glVertex3d(5, 2, 0);
+		glVertex3d(8, 0, 0);
+	glEnd();
+
+	// --- /draw
 	glPopMatrix();
 }
 
@@ -90,7 +186,11 @@ inline void render_scene() {
 	// render 
 	draw_axis();
 	draw_cube();
-
+	//draw_gate();
+	//GameObject * obj = &gate1;
+	//obj->draw();
+	//draw_line();
+	track1.draw();
 
 	glutSwapBuffers();
 }
@@ -107,7 +207,25 @@ inline void init_gl() {
 
 inline void init_game() {
 	_edit_cam = Camera();
-	_edit_cam.pos = Vec3(15, 15, 15);
+	//_edit_cam.pos = Vec3(15, 15, 15);
+	_edit_cam.pos = Vec3(0, 4, 20);
+	//_edit_cam.pos = Vec3(0, 1, 10);  // position of play_cam, maybe
+	gate1 = Gate();
+	gate1.set_cam(&_edit_cam);
+
+	track1 = RollerTrack();
+	track1.set_cam(&_edit_cam);
+	track1.add_point(Vec3(-10, 6, 0));
+	track1.add_point(Vec3( -1, 6, 0));
+
+	track1.add_point(Vec3(  3, 4, 0));
+	track1.add_point(Vec3(  6, 2, 0));
+
+	track1.add_point(Vec3(  9, 2, 0));
+	track1.add_point(Vec3(  12, 4, 0));
+
+	track1.add_point(Vec3(  15, 6, 0));
+	track1.add_point(Vec3(  19, 6, 0));
 }
 
 int main(int argc, char ** argv) {
@@ -124,13 +242,20 @@ int main(int argc, char ** argv) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// create window
-	glutCreateWindow("Roller Coaster");
+	_edit_win =  glutCreateWindow("Edit Window");
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(render_scene);
-	
+	glutKeyboardFunc(handle_keyboard);
+
+	// set window close, not exit program
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+
 	// init
 	init_gl();
 	init_game();
+
+	// gui
+	build_glui(_edit_win);
 
 	glutMainLoop();
 	return 0;

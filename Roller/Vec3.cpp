@@ -61,6 +61,22 @@ bool Vec3::operator==(Vec3 other)
 	return (x == other.x) && (y == other.y) && (z == other.z);
 }
 
+Vec3 Vec3::cross(Vec3 other)
+{
+	Vec3 result;
+
+	// x = y1z2 - y2z1
+	result.x = y * other.z - other.y*z;
+
+	// y = z1x2 - z2x1
+	result.y = z * other.x - other.z*x;
+
+	// z = x1y2 - x2y1
+	result.z = x * other.y - other.x*y;
+
+	return result;
+}
+
 Vec3& Vec3::operator+= (Vec3 b) {
 
 	this->x = this->x + b.x;

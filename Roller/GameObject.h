@@ -2,6 +2,7 @@
 
 #include "Vec3.h"
 #include "Color.h"
+#include "Camera.h"
 #include <iostream>
 
 class GameObject
@@ -19,6 +20,8 @@ public:
 
 	GameObject();
 	virtual void update() {};
+	virtual void draw() {};
+	//virtual void draw(Camera *cam) {};
 
 	// check if mouse is hovering over
 	// param: mousePos in world_coord

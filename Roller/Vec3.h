@@ -13,6 +13,7 @@ public:
 	Vec3 operator / (double value);
 	double operator * (Vec3 other);  // dot product
 	bool operator == (Vec3 other);
+	Vec3 cross(Vec3 other);  // cross product
 
 	// c += a
 	Vec3& operator+= (Vec3 b);
