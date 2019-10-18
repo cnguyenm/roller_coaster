@@ -55,4 +55,23 @@ void Camera::move_to(Vec3 pos)
 	
 }
 
+void Camera::look_at(Vec3 pos)
+{
+	this->center = pos;
+}
+
+// should be called, after other objects update()
+void Camera::update()
+{
+	this->pos = this->ball->pos;
+	this->pos.y += ball->size;
+	this->pos.x += ball->size / 2;
+	this->look_at(pos + Vec3(1, -1, 0));
+}
+
+void Camera::set_ball(GameObject * ball)
+{
+	this->ball = ball;
+}
+
 

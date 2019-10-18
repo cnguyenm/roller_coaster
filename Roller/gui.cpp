@@ -13,6 +13,7 @@ enum GLUI_CUST_ID {
 
 void btn_play(int control) {
 	printf("play\n");
+	_is_playing = true;  // play.cpp use this
 	start_play_window();
 
 	glutSetWindow(_play_win);
@@ -21,6 +22,7 @@ void btn_play(int control) {
 
 void btn_close_play(int control) {
 
+	_is_playing = false;
 	glutDestroyWindow(_play_win);
 }
 
@@ -48,3 +50,5 @@ void build_glui(int display_win) {
 	new GLUI_Button(panel_op, "Exit", ID_EXIT, btn_exit);
 
 }
+
+

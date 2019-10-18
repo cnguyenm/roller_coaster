@@ -14,3 +14,5 @@ double _PI = 3.14;
 double _DELTA_TIME = 1000.0 / 60.0;  // in msec, 60fps
 double _GRAVITY_FORCE = 10;
 
+bool _is_playing = false;
+

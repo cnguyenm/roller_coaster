@@ -9,6 +9,8 @@ Gate gate1;
 RollerTrack track1;
 Ball _ball1;
 
+
+
 void update_edit_window() {
 	glutSetWindow(_edit_win);
 	glutPostRedisplay();
@@ -191,6 +193,9 @@ inline void render_scene() {
 	//GameObject * obj = &gate1;
 	//obj->draw();
 	//draw_line();
+	track1.set_cam(&_edit_cam);
+	_ball1.set_cam(&_edit_cam);
+
 	track1.draw();
 	_ball1.draw();
 
@@ -280,7 +285,7 @@ int main(int argc, char ** argv) {
 	// gui
 	build_glui(_edit_win);
 
-	update_edit_win(1);
+	//update_edit_win(1);
 
 	glutMainLoop();
 	return 0;

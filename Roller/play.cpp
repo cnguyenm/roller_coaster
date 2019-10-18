@@ -6,6 +6,9 @@
 int _play_win;
 Camera _play_cam;
 
+// define in source.cpp
+extern Ball _ball1;
+extern RollerTrack track1;
 
 void draw_axis2() {
 
@@ -108,15 +111,25 @@ inline void reshape(int width, int height) {
 
 }
 
-inline void render_scene2() {
+inline void render_play_win() {
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color buffer (background)
 	glMatrixMode(GL_MODELVIEW);
 
 	// render 
-	draw_axis2();
+	
+	_ball1.set_cam(&_play_cam);
+	track1.set_cam(&_play_cam);
 
+	//_play_cam.pos = _ball1.pos;
+	//_play_cam.pos.y += _ball1.size;
+	//_play_cam.pos.x += _ball1.size/2;
+	//_play_cam.look_at(_play_cam.pos + Vec3(1, -1, 0));
+
+	_ball1.draw();
+	track1.draw();
+	draw_axis2();
 
 	glutSwapBuffers();
 }
@@ -134,6 +147,21 @@ inline void init_gl2() {
 inline void init_game2() {
 	_play_cam = Camera();
 	_play_cam.pos = Vec3(0, 1, 10);
+
+	_play_cam.set_ball(&_ball1);
+}
+
+void update_play_win(int value) {
+
+	if (!_is_playing) return;
+
+	glutSetWindow(_play_win);
+
+	_ball1.update();
+	_play_cam.update();
+	render_play_win();
+
+	glutTimerFunc(_DELTA_TIME, update_play_win, 1);
 }
 
 int start_play_window() {
@@ -147,10 +175,13 @@ int start_play_window() {
 	// window
 	_play_win = glutCreateWindow("Play Window");
 	glutReshapeFunc(reshape);
-	glutDisplayFunc(render_scene2);
+	glutDisplayFunc(render_play_win);
 
 	init_gl2();
 	init_game2();
+
+	// call every DELTA_TIME
+	update_play_win(1);
 
 	return 1;
 }

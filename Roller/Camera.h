@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+
 class Camera :
 	public GameObject
 {
@@ -21,5 +22,14 @@ public:
 
 	// move to pos, also affect camera_center
 	void move_to(Vec3 pos);
+	void look_at(Vec3 pos);
+	virtual void update();
+
+	// function for this program only
+	void set_ball(GameObject * ball);
+
+private:
+	GameObject * ball;
+
 };
 

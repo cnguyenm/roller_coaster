@@ -10,6 +10,11 @@ extern Color _BLUE;
 extern Color _YELLOW;
 extern double _PI;
 
-extern int _play_win;  // define in play.cpp
+  
+extern bool _is_playing;  
 extern double _DELTA_TIME;
 extern double _GRAVITY_FORCE;
+
+// define in play.cpp
+extern int _play_win;
+
