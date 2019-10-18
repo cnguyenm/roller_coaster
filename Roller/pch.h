@@ -10,18 +10,24 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
+
+// parent class go first
+// if classB ref classA, fileA goes first
 #include <GL/freeglut.h>
 #include <GL/glui.h>
-
 #include <math.h>
 
 #include "Camera.h"
 #include "Vec3.h"
 #include "Color.h"
 #include "GameObject.h"
+#include "Obstacle.h"
+
 #include "Gate.h"
-#include "RollerTrack.h"
 #include "Bezier.h"
+#include "RollerTrack.h"
+
+#include "Ball.h"
 #include "gui.h"
 #include "play.h"
 

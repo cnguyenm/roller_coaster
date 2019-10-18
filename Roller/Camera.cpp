@@ -40,4 +40,19 @@ void Camera::move_down(double value)
 	center.y -= value;
 }
 
+void Camera::move_relative(double x, double y, double z)
+{
+	this->pos += Vec3(x, y, z);
+	this->center += Vec3(x, y, z);
+}
+
+void Camera::move_to(Vec3 pos)
+{
+	Vec3 dir = pos - this->pos;
+	this->center += dir;
+
+	this->pos = pos;
+	
+}
+
 

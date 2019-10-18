@@ -11,6 +11,7 @@ public:
 
 	Vec3 pos;	// position
 	Vec3 vel;	// velocity
+	Vec3 accel;
 	Color color; // color rgb
 	Color color_hover;  // color when hover over
 

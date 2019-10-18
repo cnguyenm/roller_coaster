@@ -28,3 +28,9 @@ public:
 	friend Vec3 operator * (double v, Vec3 vec);
 };
 
+struct Hit {
+	Vec3 pos;
+	Vec3 tangent;
+};
+
+

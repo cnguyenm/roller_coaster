@@ -7,6 +7,7 @@ int _edit_win;
 Camera _edit_cam;
 Gate gate1;
 RollerTrack track1;
+Ball _ball1;
 
 void update_edit_window() {
 	glutSetWindow(_edit_win);
@@ -185,12 +186,13 @@ inline void render_scene() {
 
 	// render 
 	draw_axis();
-	draw_cube();
+	//draw_cube();
 	//draw_gate();
 	//GameObject * obj = &gate1;
 	//obj->draw();
 	//draw_line();
 	track1.draw();
+	_ball1.draw();
 
 	glutSwapBuffers();
 }
@@ -208,14 +210,15 @@ inline void init_gl() {
 inline void init_game() {
 	_edit_cam = Camera();
 	//_edit_cam.pos = Vec3(15, 15, 15);
-	_edit_cam.pos = Vec3(0, 4, 20);
+	_edit_cam.pos = Vec3(0, 5, 40);
 	//_edit_cam.pos = Vec3(0, 1, 10);  // position of play_cam, maybe
+	
 	gate1 = Gate();
 	gate1.set_cam(&_edit_cam);
 
 	track1 = RollerTrack();
 	track1.set_cam(&_edit_cam);
-	track1.add_point(Vec3(-10, 6, 0));
+	track1.add_point(Vec3(-10, 8, 0));
 	track1.add_point(Vec3( -1, 6, 0));
 
 	track1.add_point(Vec3(  3, 4, 0));
@@ -226,7 +229,27 @@ inline void init_game() {
 
 	track1.add_point(Vec3(  15, 6, 0));
 	track1.add_point(Vec3(  19, 6, 0));
+	track1.process_track();
+
+	_ball1 = Ball();
+	_ball1.size = 0.25;
+	_ball1.pos = Vec3(-5, 8, 0);
+	_ball1.set_cam(&_edit_cam);
+	_ball1.set_obstacle(&track1);
 }
+
+// test only
+// no run in production
+void update_edit_win(int value) {
+
+	glutSetWindow(_edit_win);
+
+	_ball1.update();
+	render_scene();
+
+	glutTimerFunc(_DELTA_TIME, update_edit_win, 1);
+}
+
 
 int main(int argc, char ** argv) {
 
@@ -237,7 +260,7 @@ int main(int argc, char ** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);	// enable double bufferd mode
 	glutInitWindowSize(640, 480);
-	glutInitWindowPosition(50, 50);
+	glutInitWindowPosition(200, 50);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -256,6 +279,8 @@ int main(int argc, char ** argv) {
 
 	// gui
 	build_glui(_edit_win);
+
+	update_edit_win(1);
 
 	glutMainLoop();
 	return 0;

@@ -15,5 +15,11 @@ public:
 	void move_right(double value);
 	void move_up(double value);
 	void move_down(double value);
+
+	// move relative with cur pos
+	void move_relative(double x, double y, double z);
+
+	// move to pos, also affect camera_center
+	void move_to(Vec3 pos);
 };
 
