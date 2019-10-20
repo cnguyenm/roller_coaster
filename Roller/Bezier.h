@@ -9,14 +9,19 @@ class Bezier :
 public:
 	Bezier();
 	std::vector<Vec3> ctrl_points;
+	Color color;
 
 	// set list points
 	void set_points(std::vector<Vec3> p_list);
 	void draw();
-	
+	void draw3d();
+
 	virtual bool is_collide(GameObject obj, Hit& hit);
 
-	// static methods
+	/*
+	 * no push, pop matrix :(
+	 * handle it outside for now
+	 */
 	static void draw_curve( 
 		std::vector<Vec3> ctrl_points,
 		Color color);

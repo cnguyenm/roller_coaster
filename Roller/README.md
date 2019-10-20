@@ -9,18 +9,22 @@ Implemented
 * ball physics
 	* gravity
 	* collision with lines, bezier
+* re-spawn ball in start
+* edit/play window render objects
+*
 
 Currently
 ------
-* edit_win, play_win: render same objects/obstacles
+* fix ball fall through bezier
 
 TODO
 ------
 * play/pause button: new window
 * camera 1st person view
 	- camera can rotate
-* repeated track 
-* move ball position 
+* fix memory error when closing windows
+* repeated track (spawn ball again)
+* custom ball position 
 * (maybe) background view
 * (maybe) customize roller track 
 * 

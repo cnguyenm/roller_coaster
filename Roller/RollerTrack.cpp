@@ -4,12 +4,13 @@
 
 RollerTrack::RollerTrack()
 {
+	this->set_init_pos(Vec3(0, 0, 0));
 	points = std::vector<Vec3>();
 }
 
 void RollerTrack::add_point(Vec3 p)
 {
-	this->points.push_back(p);
+	this->points.push_back(p + this->init_pos);
 }
 
 void RollerTrack::set_cam(Camera * cam)
@@ -119,6 +120,52 @@ void RollerTrack::draw()
 		b.draw();
 	}
 	
+	// --- /draw
+	glPopMatrix();
+}
+
+void RollerTrack::draw3d()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	this->cam->apply();
+
+	// --- draw 
+	// draw lines
+	int i = 0;
+	while (i < points.size() - 1) {
+
+		// lines
+		_GREEN.apply();
+		//glBegin(GL_LINES);		
+		//	glVertex3d(points[i].x, points[i].y, points[i].z);
+		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z);
+
+		//	// additional 2 lines
+		//	glVertex3d(points[i].x, points[i].y, points[i].z -0.25);
+		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z-0.25);
+
+		//	glVertex3d(points[i].x, points[i].y, points[i].z + 0.25);
+		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z + 0.25);		
+		//glEnd();
+
+		glBegin(GL_QUADS);
+			glVertex3d(points[i].x, points[i].y, points[i].z + 0.25);
+			glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z + 0.25);
+			glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z - 0.25);
+			glVertex3d(points[i].x, points[i].y, points[i].z - 0.25);
+		glEnd();
+
+		i += 2;
+	}
+
+	// draw bezier
+	for (Bezier b : bezier_list) {
+		b.draw3d();
+	}
+
+
 	// --- /draw
 	glPopMatrix();
 }

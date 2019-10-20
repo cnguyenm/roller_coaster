@@ -28,6 +28,8 @@
 #include "RollerTrack.h"
 
 #include "Ball.h"
+#include "TeleportPoint.h"
+
 #include "gui.h"
 #include "play.h"
 

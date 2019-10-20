@@ -9,11 +9,12 @@ public:
 	bool on_ground = false;
 	Camera * cam;
 	Obstacle * obstacle;
+	Vec3 init_pos;  // pos when ball reset
 
 	Ball();
 	void set_cam(Camera * cam);
 	void set_obstacle(Obstacle * obs);
-
+	
 	virtual void draw();
 	virtual void update();  // called every DELTA_TIME
 

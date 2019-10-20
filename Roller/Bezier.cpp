@@ -5,6 +5,7 @@
 Bezier::Bezier()
 {
 	this->ctrl_points = std::vector<Vec3>();
+	this->color = _YELLOW;
 }
 
 
@@ -17,6 +18,42 @@ void Bezier::set_points(std::vector<Vec3> p_list)
 void Bezier::draw()
 {
 	this->draw_curve(this->ctrl_points, _YELLOW);
+}
+
+void Bezier::draw3d()
+{
+	// check
+	if (ctrl_points.size() < 3) return;
+
+	Vec3 p, p1;
+	double t;
+	int n = ctrl_points.size() - 1;
+	int k = 0;
+
+	// draw
+	color.apply();
+	glBegin(GL_QUAD_STRIP);  // better performance than GL_POINTS
+
+	for (t = 0.0; t < 1.0; t += 0.1) {
+
+		p = Vec3(0, 0, 0);
+
+		// calc point for each t
+		for (unsigned int i = 0; i < ctrl_points.size(); i++) {
+			// p = p0*B(3,0) + p1*B(3,1) + ... + pn*B(n,n)
+			// p0 * B(n,k) = p0 * nCk * (1-t)^(n-k) * t^k
+			k = i;
+			p1 = ctrl_points[i] * BB(n, k, t);
+			p += p1;
+
+		}
+
+		// draw point		
+		//glVertex3d(p.x, p.y, p.z);
+		glVertex3d(p.x, p.y, p.z - 0.25);
+		glVertex3d(p.x, p.y, p.z + 0.25);
+	}
+	glEnd();
 }
 
 bool Bezier::is_collide(GameObject obj, Hit & out_hit)
@@ -90,6 +127,10 @@ bool Bezier::is_collide(GameObject obj, Hit & out_hit)
 	return false;
 }
 
+/*
+ * no push, pop matrix :(
+ * handle it outside for now
+ */
 void Bezier::draw_curve(std::vector<Vec3> ctrl_points, Color color)
 {
 

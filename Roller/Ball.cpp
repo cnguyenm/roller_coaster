@@ -5,7 +5,7 @@
 Ball::Ball()
 {
 	this->pos = Vec3(0, 0.5, 0);
-	this->color = _GREEN;
+	this->color = _BLUE;
 }
 
 void Ball::set_cam(Camera * cam)
@@ -17,6 +17,7 @@ void Ball::set_obstacle(Obstacle * obs)
 {
 	this->obstacle = obs;
 }
+
 
 void Ball::draw()
 {
@@ -60,7 +61,7 @@ void Ball::update_move() {
 	this->pos = P;
 
 	apply_collision();
-	//printf("pos: %f,%f,%f\n", P.x, P.y, P.z);
+	printf("vel: %f,%f,%f\n", V.x, V.y, V.z);
 }
 
 Vec3 Ball::find_force(Hit hit)
@@ -115,7 +116,7 @@ void Ball::apply_collision()
 	}
 	else {
 		on_ground = false;
-		printf("no hit\n");
+		//printf("no hit\n");
 	}
 
 }

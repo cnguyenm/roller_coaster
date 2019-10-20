@@ -65,8 +65,8 @@ void Camera::update()
 {
 	this->pos = this->ball->pos;
 	this->pos.y += ball->size;
-	this->pos.x += ball->size / 2;
-	this->look_at(pos + Vec3(1, -1, 0));
+	this->pos.x += ball->size / 3;
+	this->look_at(pos + Vec3(1, -0.5, 0));
 }
 
 void Camera::set_ball(GameObject * ball)

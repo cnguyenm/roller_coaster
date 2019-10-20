@@ -18,3 +18,5 @@ extern double _GRAVITY_FORCE;
 // define in play.cpp
 extern int _play_win;
 
+extern int _edit_win;  // source.cpp
+

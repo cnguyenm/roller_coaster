@@ -16,14 +16,25 @@ public:
 	Camera * cam;
 
 	RollerTrack();
+
+	// add point relative to init_pos
 	void add_point(Vec3 p);
+
+	// set cam to render
 	void set_cam(Camera * cam);
 
 	// connect all lines with Bezier curve
 	// called after creat, before draw
 	void process_track();
-	virtual bool is_collide(GameObject obj, Hit& hit);
+
+	// override parent GameObject
 	virtual void draw();
+
+	// custom draw for 3d view
+	virtual void draw3d();
+
+	// override parent Obstacle
+	virtual bool is_collide(GameObject obj, Hit& hit);
 
 private:
 	double max_left, max_right, max_top, max_down;

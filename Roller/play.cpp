@@ -3,12 +3,16 @@
 
 #include <gameshare.h>
 
-int _play_win;
+int _play_win = -1;
 Camera _play_cam;
 
 // define in source.cpp
 extern Ball _ball1;
 extern RollerTrack track1;
+extern RollerTrack track2;
+extern TeleportPoint tp_point1;
+
+void render_edit_win();  // define in source.cpp
 
 void draw_axis2() {
 
@@ -22,15 +26,15 @@ void draw_axis2() {
 
 	glBegin(GL_LINES);
 
-	for (double i = -10.0; i < 10.1; i += 2) {
+	for (double i = -30.0; i < 30.1; i += 2) {
 
 		// x-z: x vector
-		glVertex3d(-10.0, 0, i);
-		glVertex3d(10.0, 0, i);
+		glVertex3d(-30.0, 0, i);
+		glVertex3d(30.0, 0, i);
 
 		// x-z: z vector
-		glVertex3d(i, 0, -10.0);
-		glVertex3d(i, 0, 10.0);
+		glVertex3d(i, 0, -30.0);
+		glVertex3d(i, 0, 30.0);
 	}
 
 	// x
@@ -94,7 +98,7 @@ inline void draw_gate() {
 }
 
 
-inline void reshape(int width, int height) {
+void reshape2(int width, int height) {
 
 	if (height == 0) height = 1; // prevent divide by 0
 	double aspect = (double)width / (double)height;
@@ -111,7 +115,7 @@ inline void reshape(int width, int height) {
 
 }
 
-inline void render_play_win() {
+void render_play_win() {
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color buffer (background)
@@ -121,20 +125,23 @@ inline void render_play_win() {
 	
 	_ball1.set_cam(&_play_cam);
 	track1.set_cam(&_play_cam);
+	track2.set_cam(&_play_cam);
 
 	//_play_cam.pos = _ball1.pos;
 	//_play_cam.pos.y += _ball1.size;
 	//_play_cam.pos.x += _ball1.size/2;
 	//_play_cam.look_at(_play_cam.pos + Vec3(1, -1, 0));
 
-	_ball1.draw();
-	track1.draw();
 	draw_axis2();
+	_ball1.draw();
+	//track1.draw();
+	track1.draw3d();
+	track2.draw3d();
 
 	glutSwapBuffers();
 }
 
-inline void init_gl2() {
+void init_gl2() {
 	glClearColor(0.0, 0.0, 0.0, 0); // set background to black
 	glClearDepth(1.0f); // set background depth to farthest
 	glEnable(GL_DEPTH_TEST); // enable depth test for z-culling
@@ -144,23 +151,33 @@ inline void init_gl2() {
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // nice perspective corrections
 }
 
-inline void init_game2() {
+void init_game2() {
 	_play_cam = Camera();
 	_play_cam.pos = Vec3(0, 1, 10);
 
 	_play_cam.set_ball(&_ball1);
+	_play_cam.update();
 }
 
 void update_play_win(int value) {
 
 	if (!_is_playing) return;
 
-	glutSetWindow(_play_win);
-
+	// update objects
 	_ball1.update();
+	tp_point1.update();
 	_play_cam.update();
+	
+
+	// play win
+	glutSetWindow(_edit_win);
+	render_edit_win();
+
+	// edit win
+	glutSetWindow(_play_win);
 	render_play_win();
 
+	
 	glutTimerFunc(_DELTA_TIME, update_play_win, 1);
 }
 
@@ -174,7 +191,8 @@ int start_play_window() {
 
 	// window
 	_play_win = glutCreateWindow("Play Window");
-	glutReshapeFunc(reshape);
+	//printf("play win: %d\n", _play_win);
+	glutReshapeFunc(reshape2);
 	glutDisplayFunc(render_play_win);
 
 	init_gl2();

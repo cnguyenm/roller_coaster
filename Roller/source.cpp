@@ -7,6 +7,9 @@ int _edit_win;
 Camera _edit_cam;
 Gate gate1;
 RollerTrack track1;
+RollerTrack track2;
+TeleportPoint tp_point1;
+
 Ball _ball1;
 
 
@@ -36,7 +39,7 @@ void handle_keyboard(unsigned char key, int x, int y) {
 }
 
 
-inline void draw_axis() {
+void draw_axis() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -77,7 +80,7 @@ inline void draw_axis() {
 	glPopMatrix();
 }
 
-inline void draw_cube() {
+void draw_cube() {
 
 	glMatrixMode(GL_MODELVIEW);
 	
@@ -95,7 +98,7 @@ inline void draw_cube() {
 	glPopMatrix();
 }
 
-inline void draw_gate() {
+void draw_gate() {
 
 	double h = 3.0;  // height
 	double w = 6.0;  // width
@@ -163,7 +166,7 @@ void draw_line() {
 	glPopMatrix();
 }
 
-inline void reshape(int width, int height) {
+void reshape(int width, int height) {
 
 	if (height == 0) height = 1; // prevent divide by 0
 	double aspect = (double)width / (double)height;
@@ -180,7 +183,7 @@ inline void reshape(int width, int height) {
 
 }
 
-inline void render_scene() {
+void render_edit_win() {
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color buffer (background)
@@ -194,15 +197,63 @@ inline void render_scene() {
 	//obj->draw();
 	//draw_line();
 	track1.set_cam(&_edit_cam);
+	track2.set_cam(&_edit_cam);
 	_ball1.set_cam(&_edit_cam);
 
-	track1.draw();
+	track1.draw3d();
+	track2.draw3d();
 	_ball1.draw();
 
 	glutSwapBuffers();
 }
 
-inline void init_gl() {
+void design_track() {
+
+	// --- track1 ---
+	// -------
+	track1 = RollerTrack();
+	track1.set_cam(&_edit_cam);
+	track1.set_init_pos(Vec3(0, 0, 0));
+
+	// slide for ball to gain vel
+	track1.add_point(Vec3(-10, 8, 0));
+	track1.add_point(Vec3(-7, 7, 0));
+
+	track1.add_point(Vec3(-5, 6, 0));
+	track1.add_point(Vec3(-1, 6, 0));
+
+	track1.add_point(Vec3(3, 4, 0));
+	track1.add_point(Vec3(6, 2, 0));
+
+	track1.add_point(Vec3(9, 2, 0));
+	track1.add_point(Vec3(12, 4, 0));
+
+	track1.add_point(Vec3(15, 6, 0));
+	track1.add_point(Vec3(19, 6, 0));
+	track1.process_track();
+
+	// --- track2 ---
+	// -------
+	track2 = RollerTrack();
+	track2.set_cam(&_edit_cam);
+	track2.set_init_pos(Vec3(20, 0, 0));
+
+	// overlap 1st horizontal of track1
+	track2.add_point(Vec3(-5, 6, 0));
+	track2.add_point(Vec3(-1, 6, 0));
+
+	track2.add_point(Vec3(3, 4, 0));
+	track2.add_point(Vec3(6, 2, 0));
+
+	track2.add_point(Vec3(9, 2, 0));
+	track2.add_point(Vec3(12, 4, 0));
+
+	track2.add_point(Vec3(15, 6, 0));
+	track2.add_point(Vec3(19, 6, 0));
+	track2.process_track();
+}
+
+void init_gl() {
 	glClearColor(0.0, 0.0, 0.0, 0); // set background to black
 	glClearDepth(1.0f); // set background depth to farthest
 	glEnable(GL_DEPTH_TEST); // enable depth test for z-culling
@@ -212,35 +263,30 @@ inline void init_gl() {
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // nice perspective corrections
 }
 
-inline void init_game() {
+void init_game() {
 	_edit_cam = Camera();
-	//_edit_cam.pos = Vec3(15, 15, 15);
-	_edit_cam.pos = Vec3(0, 5, 40);
+	_edit_cam.pos = Vec3(0, 10, 20);
+	//_edit_cam.pos = Vec3(0, 5, 40);
 	//_edit_cam.pos = Vec3(0, 1, 10);  // position of play_cam, maybe
 	
 	gate1 = Gate();
 	gate1.set_cam(&_edit_cam);
 
-	track1 = RollerTrack();
-	track1.set_cam(&_edit_cam);
-	track1.add_point(Vec3(-10, 8, 0));
-	track1.add_point(Vec3( -1, 6, 0));
+	// roller track
+	design_track();
 
-	track1.add_point(Vec3(  3, 4, 0));
-	track1.add_point(Vec3(  6, 2, 0));
-
-	track1.add_point(Vec3(  9, 2, 0));
-	track1.add_point(Vec3(  12, 4, 0));
-
-	track1.add_point(Vec3(  15, 6, 0));
-	track1.add_point(Vec3(  19, 6, 0));
-	track1.process_track();
-
+	// ball
 	_ball1 = Ball();
 	_ball1.size = 0.25;
-	_ball1.pos = Vec3(-5, 8, 0);
+	_ball1.set_init_pos(Vec3(-9, 8.5, 0));
 	_ball1.set_cam(&_edit_cam);
 	_ball1.set_obstacle(&track1);
+
+	// tp point
+	tp_point1 = TeleportPoint();
+	tp_point1.set_target(&_ball1);
+	tp_point1.set_init_pos(Vec3(16, 6, 0));
+	tp_point1.destination = Vec3(-4, 6, 0);
 }
 
 // test only
@@ -250,7 +296,9 @@ void update_edit_win(int value) {
 	glutSetWindow(_edit_win);
 
 	_ball1.update();
-	render_scene();
+	render_edit_win();
+
+	
 
 	glutTimerFunc(_DELTA_TIME, update_edit_win, 1);
 }
@@ -272,7 +320,7 @@ int main(int argc, char ** argv) {
 	// create window
 	_edit_win =  glutCreateWindow("Edit Window");
 	glutReshapeFunc(reshape);
-	glutDisplayFunc(render_scene);
+	glutDisplayFunc(render_edit_win);
 	glutKeyboardFunc(handle_keyboard);
 
 	// set window close, not exit program
@@ -286,6 +334,7 @@ int main(int argc, char ** argv) {
 	build_glui(_edit_win);
 
 	//update_edit_win(1);
+	// start play_win, but not update yet
 
 	glutMainLoop();
 	return 0;
