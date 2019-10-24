@@ -19,6 +19,8 @@ public:
 
 	// move relative with cur pos
 	void move_relative(double x, double y, double z);
+	void rotate_around_yaxis(double value);
+	void rotate_around_xaxis(double value);
 
 	// move to pos, also affect camera_center
 	void move_to(Vec3 pos);
@@ -30,6 +32,7 @@ public:
 
 private:
 	GameObject * ball;
-
+	double angle_y_axis = 0;
+	double angle_x_axis = 0;
 };
 

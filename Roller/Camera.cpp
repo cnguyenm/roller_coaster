@@ -9,11 +9,19 @@ Camera::Camera()
 
 void Camera::apply()
 {
+	
+
 	gluLookAt(
 		pos.x, pos.y, pos.z,
 		center.x, center.y, center.z,  // center x,y,z
 		0, 1, 0  // up vector
 	);
+
+	// instead of rotate cam
+	// rotate the world
+	// dir: counter-clockwise
+	glRotated(this->angle_y_axis, 0, 1, 0);
+	glRotated(this->angle_x_axis, 1, 0, 0);
 }
 
 void Camera::move_left(double value)
@@ -44,6 +52,17 @@ void Camera::move_relative(double x, double y, double z)
 {
 	this->pos += Vec3(x, y, z);
 	this->center += Vec3(x, y, z);
+}
+
+void Camera::rotate_around_yaxis(double value)
+{
+	//pos.x += 2;
+	this->angle_y_axis += value;
+}
+
+void Camera::rotate_around_xaxis(double value)
+{
+	this->angle_x_axis += value;
 }
 
 void Camera::move_to(Vec3 pos)

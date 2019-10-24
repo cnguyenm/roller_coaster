@@ -11,7 +11,7 @@ RollerTrack track2;
 TeleportPoint tp_point1;
 
 Ball _ball1;
-
+Vec3 _last_mouse_pos2d;  // 2d only, not in world coords
 
 
 void update_edit_window() {
@@ -19,22 +19,56 @@ void update_edit_window() {
 	glutPostRedisplay();
 }
 
+void rotate_cam(unsigned char key) {
+
+	switch (key) {
+
+		// cam rotate left, by rotate everything right 
+		case 'a':			
+			_edit_cam.rotate_around_yaxis(5); break;
+		case 'd':
+			_edit_cam.rotate_around_yaxis(-5); break;
+		case 'w':
+			_edit_cam.rotate_around_xaxis(5); break;
+		case 's':
+			_edit_cam.rotate_around_xaxis(-5); break;
+		default:
+			break;
+	}
+}
+
+void move_cam(unsigned char key) {
+	
+	switch (key) {
+		case 'a':
+			_edit_cam.move_relative(-2,  0, 0); break;
+			
+		case 'd':
+			_edit_cam.move_relative(2, 0, 0); break;
+		case 'w':
+			_edit_cam.move_relative(0, 0, -2); break;
+		case 's':
+			_edit_cam.move_relative(0, 0, 2); break;
+		case 'r':
+			_edit_cam.move_relative(0, 2, 0); break;
+		case 'f':
+			_edit_cam.move_relative(0, -2, 0); break;
+		default:
+			break;
+	}
+}
+
 void handle_keyboard(unsigned char key, int x, int y) {
 
 	//printf("%c \n", key);
-	switch (key)
-	{
-	case 'a':
-		_edit_cam.move_left(2); break;
-	case 'd':
-		_edit_cam.move_right(2); break;
-	case 'w':
-		_edit_cam.move_up(2); break;		
-	case 's':
-		_edit_cam.move_down(2); break;
-	default:
-		break;
+	int mod = glutGetModifiers();
+	if (mod == GLUT_ACTIVE_ALT) {
+		rotate_cam(key);
 	}
+	else {
+		move_cam(key);
+	}
+	
 	update_edit_window();
 }
 
@@ -322,7 +356,7 @@ int main(int argc, char ** argv) {
 	glutReshapeFunc(reshape);
 	glutDisplayFunc(render_edit_win);
 	glutKeyboardFunc(handle_keyboard);
-
+	
 	// set window close, not exit program
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 

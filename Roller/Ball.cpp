@@ -61,7 +61,7 @@ void Ball::update_move() {
 	this->pos = P;
 
 	apply_collision();
-	printf("vel: %f,%f,%f\n", V.x, V.y, V.z);
+	//printf("vel: %f,%f,%f\n", V.x, V.y, V.z);
 }
 
 Vec3 Ball::find_force(Hit hit)
