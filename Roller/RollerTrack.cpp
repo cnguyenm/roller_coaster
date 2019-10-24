@@ -138,17 +138,6 @@ void RollerTrack::draw3d()
 
 		// lines
 		_GREEN.apply();
-		//glBegin(GL_LINES);		
-		//	glVertex3d(points[i].x, points[i].y, points[i].z);
-		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z);
-
-		//	// additional 2 lines
-		//	glVertex3d(points[i].x, points[i].y, points[i].z -0.25);
-		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z-0.25);
-
-		//	glVertex3d(points[i].x, points[i].y, points[i].z + 0.25);
-		//	glVertex3d(points[i + 1].x, points[i + 1].y, points[i + 1].z + 0.25);		
-		//glEnd();
 
 		glBegin(GL_QUADS);
 			glVertex3d(points[i].x, points[i].y, points[i].z + 0.25);
@@ -161,9 +150,9 @@ void RollerTrack::draw3d()
 	}
 
 	// draw bezier
-	for (Bezier b : bezier_list) {
-		b.draw3d();
-	}
+	//for (Bezier b : bezier_list) {
+	//	b.draw3d();
+	//}
 
 
 	// --- /draw

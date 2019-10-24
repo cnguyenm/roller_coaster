@@ -11,7 +11,9 @@ RollerTrack track2;
 TeleportPoint tp_point1;
 
 Ball _ball1;
-Vec3 _last_mouse_pos2d;  // 2d only, not in world coords
+
+Bezier _curve_test1;
+RollerTrack track_test1;
 
 
 void update_edit_window() {
@@ -200,6 +202,19 @@ void draw_line() {
 	glPopMatrix();
 }
 
+void draw_test_curve() {
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	_edit_cam.apply();
+
+	_curve_test1.draw3d();
+
+	glPopMatrix();
+}
+
 void reshape(int width, int height) {
 
 	if (height == 0) height = 1; // prevent divide by 0
@@ -233,10 +248,13 @@ void render_edit_win() {
 	track1.set_cam(&_edit_cam);
 	track2.set_cam(&_edit_cam);
 	_ball1.set_cam(&_edit_cam);
+	track_test1.set_cam(&_edit_cam);
 
 	track1.draw3d();
 	track2.draw3d();
 	_ball1.draw();
+	//draw_test_curve();
+	track_test1.draw3d();
 
 	glutSwapBuffers();
 }
@@ -321,6 +339,26 @@ void init_game() {
 	tp_point1.set_target(&_ball1);
 	tp_point1.set_init_pos(Vec3(16, 6, 0));
 	tp_point1.destination = Vec3(-4, 6, 0);
+
+	// bezier 3d, space curve
+	//_curve_test1 = Bezier();
+	//std::vector<Vec3> p_list1;
+	//p_list1.push_back(Vec3(-2, 5, 2));
+	//p_list1.push_back(Vec3(3, 5, 2));
+	//p_list1.push_back(Vec3(3, 1, 6));
+	//p_list1.push_back(Vec3(3, 1, 12));
+	//
+	//_curve_test1.set_points(p_list1);
+	track_test1 = RollerTrack();
+	track_test1.set_cam(&_edit_cam);
+	track_test1.set_init_pos(Vec3(0, 0, 0));
+
+	// slide for ball to gain vel
+	track_test1.add_point(Vec3(-2, 5, 2));
+	track_test1.add_point(Vec3(3, 5, 2));
+
+	track_test1.add_point(Vec3(3, 1, 4));
+	track_test1.add_point(Vec3(3, 1, 8));
 }
 
 // test only
