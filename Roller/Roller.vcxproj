@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Bezier.h" />
+    <ClInclude Include="BezierCurve.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Cube.h" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Bezier.cpp" />
+    <ClCompile Include="BezierCurve.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />

@@ -25,6 +25,7 @@
 
 #include "Gate.h"
 #include "Bezier.h"
+#include "BezierCurve.h"
 #include "RollerTrack.h"
 
 #include "Ball.h"

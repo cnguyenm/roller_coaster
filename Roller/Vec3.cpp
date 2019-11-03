@@ -9,11 +9,12 @@ Vec3::Vec3()
 
 }
 
-Vec3::Vec3(double x, double y, double z)
+Vec3::Vec3(double x, double y, double z) : x(x), y(y), z(z)
 {
-	this->x = x;
-	this->y = y;
-	this->z = z;
+	// use that syntax, no need to do this
+	//this->x = x;
+	//this->y = y;
+	//this->z = z;
 }
 
 Vec3 Vec3::operator+(Vec3 other)

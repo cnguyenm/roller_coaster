@@ -150,9 +150,9 @@ void RollerTrack::draw3d()
 	}
 
 	// draw bezier
-	//for (Bezier b : bezier_list) {
-	//	b.draw3d();
-	//}
+	for (Bezier b : bezier_list) {
+		b.draw3d();
+	}
 
 
 	// --- /draw

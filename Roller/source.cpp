@@ -15,6 +15,12 @@ Ball _ball1;
 Bezier _curve_test1;
 RollerTrack track_test1;
 
+BezierCurve curve1;
+BezierCurve curve2;
+BezierCurve curve3;
+BezierCurve curve4;
+BezierCurve curve5;
+BezierCurve curve6;
 
 void update_edit_window() {
 	glutSetWindow(_edit_win);
@@ -74,6 +80,22 @@ void handle_keyboard(unsigned char key, int x, int y) {
 	update_edit_window();
 }
 
+void draw_ground() {
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	// --- draw 
+	glLoadIdentity();
+	_edit_cam.apply();
+	_GREY.apply();
+	glBegin(GL_QUADS);
+		glVertex3d(-10, 0, 10);
+		glVertex3d( 10, 0, 10);
+		glVertex3d( 10, 0, -10);
+		glVertex3d( -10, 0, -10);
+	glEnd();
+	glPopMatrix();
+}
 
 void draw_axis() {
 
@@ -215,6 +237,69 @@ void draw_test_curve() {
 	glPopMatrix();
 }
 
+void draw_spin() {
+
+	double radius = 5;
+	double u = radius / 2 + sqrt(radius);
+	double h = 0.5;
+
+	// cylinder
+	glMatrixMode(GL_MODELVIEW);
+
+		glPushMatrix();
+		glLoadIdentity();
+
+		// --- draw 
+		_edit_cam.apply();
+
+		glRotated(-90, 1, 0, 0);
+		_WHITE.apply();
+		glutWireCylinder(5.0f, 10.0f, 50, 20);  // radius=2, height=5
+
+
+	glPopMatrix();
+
+
+	//
+	glMatrixMode(GL_MODELVIEW);
+
+		glPushMatrix();
+		glLoadIdentity();
+
+		// --- draw 
+		_edit_cam.apply();
+
+	
+		_GREEN.apply();
+		curve1.draw();
+
+		_RED.apply();
+		curve2.draw();
+
+		_GREEN.apply();
+		curve3.draw();
+
+		_RED.apply();
+		curve4.draw();
+
+		_GREEN.apply();
+		curve5.draw();
+
+		_RED.apply();
+		curve6.draw();
+
+		// draw lines
+		_GREEN.apply();
+		glLineWidth(5.0f);
+		glBegin(GL_LINES);
+			glVertex3d(0, 16 * h, -u);
+			glVertex3d(-10, 16 * h, -u);
+		glEnd();
+		glLineWidth(1.0f);
+
+	glPopMatrix();
+}
+
 void reshape(int width, int height) {
 
 	if (height == 0) height = 1; // prevent divide by 0
@@ -239,22 +324,25 @@ void render_edit_win() {
 	glMatrixMode(GL_MODELVIEW);
 
 	// render 
-	draw_axis();
+	draw_ground();
+	//draw_axis();
 	//draw_cube();
 	//draw_gate();
 	//GameObject * obj = &gate1;
 	//obj->draw();
 	//draw_line();
-	track1.set_cam(&_edit_cam);
-	track2.set_cam(&_edit_cam);
-	_ball1.set_cam(&_edit_cam);
-	track_test1.set_cam(&_edit_cam);
+	//track1.set_cam(&_edit_cam);
+	//track2.set_cam(&_edit_cam);
+	//_ball1.set_cam(&_edit_cam);
+	//track_test1.set_cam(&_edit_cam);
 
-	track1.draw3d();
-	track2.draw3d();
-	_ball1.draw();
+	//track1.draw3d();
+	//track2.draw3d();
+	//_ball1.draw();
 	//draw_test_curve();
-	track_test1.draw3d();
+	//track_test1.draw3d();
+
+	draw_spin();
 
 	glutSwapBuffers();
 }
@@ -305,6 +393,65 @@ void design_track() {
 	track2.process_track();
 }
 
+
+void design_spin() {
+
+	double radius = 5;
+	double u = radius / 2 + sqrt(radius);
+	double h = 0.5;
+
+	curve1 = BezierCurve({
+		// x, height, y
+		{  0,	0,   u},
+		{u/2,	0,   u},
+		{  u,	h, u/2},
+		{  u, 2*h,   0}
+	});
+
+	curve2 = BezierCurve({
+		{	u, 2*h,   0},
+		{	u, 3*h, -u/2},
+		{ u/2, 4*h, -u},
+		{	0, 5*h, -u}
+	});
+
+	curve3 = BezierCurve({
+		{   0, 5*h,   -u},
+		{-u/2, 6*h,   -u},
+		{  -u, 7*h, -u/2},
+		{  -u, 8*h,    0}
+	});
+
+	curve4 = BezierCurve({
+		{	-u,  8*h,   0},
+		{	-u,  9*h, u/2},
+		{ -u/2, 10*h,   u},
+		{	 0, 11*h,   u}
+	});
+
+	curve5 = BezierCurve({
+		{  0,	11*h,   u},
+		{u/2,	12*h,   u},
+		{  u,	13*h, u/2},
+		{  u,	14*h,   0}
+	});
+
+	curve6 = BezierCurve({
+		{	u, 14*h,    0},
+		{	u, 15*h, -u/2},
+		{ u/2, 16*h,   -u},
+		{	0, 16*h,   -u}
+	});
+
+	//curve1 = BezierCurve({
+	//	{-10, 8, 0},
+	//	{-7, 8, 0},
+	//	{-5, 6, 0},
+	//	{-1, 4, 0}
+	//});
+	
+}
+
 void init_gl() {
 	glClearColor(0.0, 0.0, 0.0, 0); // set background to black
 	glClearDepth(1.0f); // set background depth to farthest
@@ -340,15 +487,16 @@ void init_game() {
 	tp_point1.set_init_pos(Vec3(16, 6, 0));
 	tp_point1.destination = Vec3(-4, 6, 0);
 
+
 	// bezier 3d, space curve
-	//_curve_test1 = Bezier();
-	//std::vector<Vec3> p_list1;
-	//p_list1.push_back(Vec3(-2, 5, 2));
-	//p_list1.push_back(Vec3(3, 5, 2));
-	//p_list1.push_back(Vec3(3, 1, 6));
-	//p_list1.push_back(Vec3(3, 1, 12));
-	//
-	//_curve_test1.set_points(p_list1);
+	_curve_test1 = Bezier();
+	std::vector<Vec3> p_list1;
+	p_list1.push_back(Vec3(-2, 5, 2));
+	p_list1.push_back(Vec3(3, 5, 2));
+	p_list1.push_back(Vec3(3, 1, 6));
+	p_list1.push_back(Vec3(3, 1, 12));
+	
+	_curve_test1.set_points(p_list1);
 	track_test1 = RollerTrack();
 	track_test1.set_cam(&_edit_cam);
 	track_test1.set_init_pos(Vec3(0, 0, 0));
@@ -359,6 +507,9 @@ void init_game() {
 
 	track_test1.add_point(Vec3(3, 1, 4));
 	track_test1.add_point(Vec3(3, 1, 8));
+
+	// design spin
+	design_spin();
 }
 
 // test only
