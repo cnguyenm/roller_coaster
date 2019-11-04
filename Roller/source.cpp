@@ -15,12 +15,7 @@ Ball _ball1;
 Bezier _curve_test1;
 RollerTrack track_test1;
 
-BezierCurve curve1;
-BezierCurve curve2;
-BezierCurve curve3;
-BezierCurve curve4;
-BezierCurve curve5;
-BezierCurve curve6;
+Spin spin1;
 
 void update_edit_window() {
 	glutSetWindow(_edit_win);
@@ -260,7 +255,7 @@ void draw_spin() {
 	glPopMatrix();
 
 
-	//
+	// draw lines
 	glMatrixMode(GL_MODELVIEW);
 
 		glPushMatrix();
@@ -269,25 +264,7 @@ void draw_spin() {
 		// --- draw 
 		_edit_cam.apply();
 
-	
-		_GREEN.apply();
-		curve1.draw();
-
-		_RED.apply();
-		curve2.draw();
-
-		_GREEN.apply();
-		curve3.draw();
-
-		_RED.apply();
-		curve4.draw();
-
-		_GREEN.apply();
-		curve5.draw();
-
-		_RED.apply();
-		curve6.draw();
-
+			
 		// draw lines
 		_GREEN.apply();
 		glLineWidth(5.0f);
@@ -298,6 +275,11 @@ void draw_spin() {
 		glLineWidth(1.0f);
 
 	glPopMatrix();
+
+
+	// draw spin
+	spin1.set_cam(&_edit_cam);
+	spin1.draw();
 }
 
 void reshape(int width, int height) {
@@ -333,12 +315,12 @@ void render_edit_win() {
 	//draw_line();
 	//track1.set_cam(&_edit_cam);
 	//track2.set_cam(&_edit_cam);
-	//_ball1.set_cam(&_edit_cam);
+	_ball1.set_cam(&_edit_cam);
 	//track_test1.set_cam(&_edit_cam);
 
 	//track1.draw3d();
 	//track2.draw3d();
-	//_ball1.draw();
+	_ball1.draw();
 	//draw_test_curve();
 	//track_test1.draw3d();
 
@@ -393,14 +375,13 @@ void design_track() {
 	track2.process_track();
 }
 
-
 void design_spin() {
 
 	double radius = 5;
 	double u = radius / 2 + sqrt(radius);
 	double h = 0.5;
 
-	curve1 = BezierCurve({
+	Bezier curve1 = Bezier({
 		// x, height, y
 		{  0,	0,   u},
 		{u/2,	0,   u},
@@ -408,48 +389,47 @@ void design_spin() {
 		{  u, 2*h,   0}
 	});
 
-	curve2 = BezierCurve({
+	Bezier curve2 = Bezier({
 		{	u, 2*h,   0},
 		{	u, 3*h, -u/2},
 		{ u/2, 4*h, -u},
 		{	0, 5*h, -u}
 	});
 
-	curve3 = BezierCurve({
+	Bezier curve3 = Bezier({
 		{   0, 5*h,   -u},
 		{-u/2, 6*h,   -u},
 		{  -u, 7*h, -u/2},
 		{  -u, 8*h,    0}
 	});
 
-	curve4 = BezierCurve({
+	Bezier curve4 = Bezier({
 		{	-u,  8*h,   0},
 		{	-u,  9*h, u/2},
 		{ -u/2, 10*h,   u},
 		{	 0, 11*h,   u}
 	});
 
-	curve5 = BezierCurve({
+	Bezier curve5 = Bezier({
 		{  0,	11*h,   u},
 		{u/2,	12*h,   u},
 		{  u,	13*h, u/2},
 		{  u,	14*h,   0}
 	});
 
-	curve6 = BezierCurve({
+	Bezier curve6 = Bezier({
 		{	u, 14*h,    0},
 		{	u, 15*h, -u/2},
 		{ u/2, 16*h,   -u},
 		{	0, 16*h,   -u}
 	});
 
-	//curve1 = BezierCurve({
-	//	{-10, 8, 0},
-	//	{-7, 8, 0},
-	//	{-5, 6, 0},
-	//	{-1, 4, 0}
-	//});
-	
+	// set ball on spin
+	spin1 = Spin({ curve1, curve2, curve3, curve4, curve5, curve6 });
+
+	_ball1.set_init_pos(Vec3(0, 16 * h + _ball1.size, -u));
+	_ball1.set_track(&spin1);
+	_ball1.vel.x = 5;  // give ball a push
 }
 
 void init_gl() {
@@ -515,6 +495,8 @@ void init_game() {
 // test only
 // no run in production
 void update_edit_win(int value) {
+
+	if (!_is_playing) return;
 
 	glutSetWindow(_edit_win);
 

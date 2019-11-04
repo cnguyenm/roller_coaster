@@ -167,6 +167,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="play.h" />
     <ClInclude Include="RollerTrack.h" />
+    <ClInclude Include="Spin.h" />
     <ClInclude Include="TeleportPoint.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClCompile Include="Roller.cpp" />
     <ClCompile Include="RollerTrack.cpp" />
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="Spin.cpp" />
     <ClCompile Include="TeleportPoint.cpp" />
     <ClCompile Include="Vec3.cpp" />
   </ItemGroup>

@@ -30,6 +30,7 @@
 
 #include "Ball.h"
 #include "TeleportPoint.h"
+#include "Spin.h"
 
 #include "gui.h"
 #include "play.h"

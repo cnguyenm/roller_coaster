@@ -4,6 +4,8 @@
 
 GLUI *glui;
 GLUI_StaticText * game_msg;
+void update_edit_win(int value);  // from source.cpp
+
 
 enum GLUI_CUST_ID {
 	ID_PLAY, ID_PAUSE, ID_RESET,
@@ -15,12 +17,13 @@ void btn_play(int control) {
 	printf("play\n");
 	_is_playing = true;  // play.cpp use this
 
-	if (_play_win == -1) start_play_window();
-	else update_play_win(1);
+	update_edit_win(1);
+	//if (_play_win == -1) start_play_window();
+	//else update_play_win(1);
 
 
-	glutSetWindow(_play_win);
-	glutPostRedisplay();
+	//glutSetWindow(_play_win);
+	//glutPostRedisplay();
 }
 
 void btn_pause(int control) {
@@ -38,14 +41,14 @@ void btn_toggle_play(int control) {
 
 	// play, or resume
 	_is_playing = true;  // play.cpp use this
+	update_edit_win(1);
 
-	if (_play_win == -1) start_play_window(); // if not window
-	else update_play_win(1);
+	//if (_play_win == -1) start_play_window(); // if not window
+	//else update_play_win(1);
 
 
-	glutSetWindow(_play_win);
+	glutSetWindow(_edit_win);
 	glutPostRedisplay();
-
 }
 
 void btn_reset_play(int control) {

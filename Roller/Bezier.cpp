@@ -4,30 +4,41 @@
 
 Bezier::Bezier()
 {
-	this->ctrl_points = std::vector<Vec3>();
+	this->control_points = std::vector<Vec3>();
 	this->color = _YELLOW;
 }
 
-
+Bezier::Bezier(const std::vector<Vec3>& controls) : control_points(controls)
+{
+	genControlLine();
+	genCurve();
+	find_length();
+}
 
 void Bezier::set_points(std::vector<Vec3> p_list)
 {
-	this->ctrl_points = p_list;
+	this->control_points = p_list;
 }
 
 void Bezier::draw()
 {
-	this->draw_curve(this->ctrl_points, _YELLOW);
+	glLineWidth(5.0f);
+	glBegin(GL_LINE_STRIP);
+	for (Vec3 p : points) {
+		glVertex3d(p.x, p.y, p.z);
+	}
+	glEnd();
+	glLineWidth(1.0f);
 }
 
 void Bezier::draw3d()
 {
 	// check
-	if (ctrl_points.size() < 3) return;
+	if (control_points.size() < 3) return;
 
 	Vec3 p, p1;
 	double t;
-	int n = ctrl_points.size() - 1;
+	int n = control_points.size() - 1;
 	int k = 0;
 
 	// draw
@@ -39,11 +50,11 @@ void Bezier::draw3d()
 		p = Vec3(0, 0, 0);
 
 		// calc point for each t
-		for (unsigned int i = 0; i < ctrl_points.size(); i++) {
+		for (unsigned int i = 0; i < control_points.size(); i++) {
 			// p = p0*B(3,0) + p1*B(3,1) + ... + pn*B(n,n)
 			// p0 * B(n,k) = p0 * nCk * (1-t)^(n-k) * t^k
 			k = i;
-			p1 = ctrl_points[i] * BB(n, k, t);
+			p1 = control_points[i] * BB(n, k, t);
 			p += p1;
 
 		}
@@ -66,9 +77,6 @@ bool Bezier::is_collide(GameObject obj, Hit & out_hit)
 
 	// if near outside
 	double error = 0.01;
-	/*if (abs(obj.pos.x - ctrl_points[0].x) < error) {
-
-	}*/
 
 	Vec3 result;
 	double step = 0.01;
@@ -88,7 +96,7 @@ bool Bezier::is_collide(GameObject obj, Hit & out_hit)
 		p = get_point_on_curve(mid);
 
 		// just take it?
-		if (count > 1000) {
+		if (count > 100) {
 			break;
 		}
 
@@ -168,16 +176,67 @@ void Bezier::draw_curve(std::vector<Vec3> ctrl_points, Color color)
 	glEnd();
 }
 
+Vec3 Bezier::interp(Vec3 n1, Vec3 n2, float lambda)
+{
+	return n1 + lambda * (n2 - n1);
+}
+
+void Bezier::genControlLine()
+{
+	for (int i = 0; i < control_points.size() - 1; ++i)
+		for (int j = 0; j <= control_step; ++j)
+			control_line.emplace_back(interp(control_points[i], control_points[i + 1], static_cast<float>(j) / control_step));
+
+}
+
+void Bezier::genCurve()
+{
+	int step = 100;
+	const Vec3& p0 = control_points[0];
+	const Vec3& p1 = control_points[1];
+	const Vec3& p2 = control_points[2];
+	const Vec3& p3 = control_points[3];
+	points.resize(step + 1);
+	for (int i = 0; i <= step; ++i)
+	{
+		float lambda = static_cast<float>(i) / step;
+		// Referring to https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Higher-order_curves, Construction of a cubic B¨¦zier curve
+		// The Green Lines
+		Vec3 q0 = interp(p0, p1, lambda);
+		Vec3 q1 = interp(p1, p2, lambda);
+		Vec3 q2 = interp(p2, p3, lambda);
+		// The Blue Line
+		Vec3 r0 = interp(q0, q1, lambda);
+		Vec3 r1 = interp(q1, q2, lambda);
+		// The Black Dot
+		points[i] = interp(r0, r1, lambda);
+	}
+}
+
+void Bezier::find_length()
+{
+	// should be called after genCurve()
+
+	// divide curve into small segments
+	// sum(length of each segment)
+	for (int i = 0; i < points.size() - 1; i++) {
+		double dist = (points[i + 1] - points[i]).magn();
+		this->length += dist;
+	}
+
+	
+}
+
 Vec3 Bezier::get_point_on_curve(double t)
 {
 	Vec3 p = Vec3(0, 0, 0);
-	int n = ctrl_points.size() - 1;
+	int n = control_points.size() - 1;
 
-	for (unsigned int k = 0; k < ctrl_points.size(); k++) {
+	for (unsigned int k = 0; k < control_points.size(); k++) {
 		// p = p0*B(3,0) + p1*B(3,1) + ... + pn*B(n,n)
 		// p0 * B(n,k) = p0 * nCk * (1-t)^(n-k) * t^k
 
-		Vec3 p1 = ctrl_points[k] * BB(n, k, t);
+		Vec3 p1 = control_points[k] * BB(n, k, t);
 		p += p1;
 
 	}
@@ -186,14 +245,14 @@ Vec3 Bezier::get_point_on_curve(double t)
 
 Vec3 Bezier::get_derivative(double t)
 {
-	int n = ctrl_points.size() - 1;
+	int n = control_points.size() - 1;
 	Vec3 sum;
 
 	// k = 0->n-1
 	for (int k = 0; k < n; k++) {
 
 		// P'k = p_k+1 - pk
-		Vec3 pk_prime = ctrl_points[k + 1] - ctrl_points[k];
+		Vec3 pk_prime = control_points[k + 1] - control_points[k];
 		sum += pk_prime * BB(n - 1, k, t);
 	}
 

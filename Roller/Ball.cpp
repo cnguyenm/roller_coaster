@@ -18,6 +18,11 @@ void Ball::set_obstacle(Obstacle * obs)
 	this->obstacle = obs;
 }
 
+void Ball::set_track(Spin * spin)
+{
+	this->spin = spin;
+}
+
 
 void Ball::draw()
 {
@@ -43,9 +48,16 @@ void Ball::draw()
 void Ball::update()
 {
 	//this->pos.x += 0.05;
-	if (!on_ground) apply_gravity();
+	if (on_track) run_on_track();
+	else {
+		if (!on_ground) apply_gravity();
+		update_move();  // normal move
+	}
+	
 
-	update_move();
+	
+
+	//update_move();
 }
 
 void Ball::update_move() {
@@ -60,7 +72,7 @@ void Ball::update_move() {
 	this->vel = V;
 	this->pos = P;
 
-	apply_collision();
+	//apply_collision();
 	//printf("vel: %f,%f,%f\n", V.x, V.y, V.z);
 }
 
@@ -85,6 +97,33 @@ Vec3 Ball::find_force(Hit hit)
 	Vec3 F = this->weight * gravity * sin(alpha) * t_unit;
 
 	return F;
+}
+
+void Ball::run_on_track()
+{
+	// find accel, vel at time t0
+	Hit hit;
+	if (!spin->is_collide(*this, hit)) return;
+
+	// find dist_travel
+	double t = _DELTA_TIME / 1000.0;  // msec -> sec
+
+	accel = find_force(hit);
+	vel = vel + accel * t;
+	double dist = (vel * t).magn();
+	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
+
+	// convert dist_travel to next_pos on curve
+	Vec3 next_pos;
+	if (spin->let_ball_run(dist, next_pos)) {
+		pos = next_pos;
+		pos.y += size;
+	}
+	else {
+		on_track = false;
+	}
+
+	
 }
 
 void Ball::apply_gravity()
