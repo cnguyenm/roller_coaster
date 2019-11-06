@@ -28,9 +28,13 @@
 #include "BezierCurve.h"
 #include "RollerTrack.h"
 
+
+#include "TrackComponent.h"
+#include "Track.h"
 #include "Ball.h"
 #include "TeleportPoint.h"
 #include "Spin.h"
+#include "SlidingPlane.h"
 
 #include "gui.h"
 #include "play.h"

@@ -18,9 +18,14 @@ void Ball::set_obstacle(Obstacle * obs)
 	this->obstacle = obs;
 }
 
-void Ball::set_track(Spin * spin)
+void Ball::set_track(Track * track)
 {
-	this->spin = spin;
+	this->track = track;
+}
+
+void Ball::set_plane(TrackComponent * plane)
+{
+	this->plane = plane;
 }
 
 
@@ -53,9 +58,6 @@ void Ball::update()
 		if (!on_ground) apply_gravity();
 		update_move();  // normal move
 	}
-	
-
-	
 
 	//update_move();
 }
@@ -103,27 +105,63 @@ void Ball::run_on_track()
 {
 	// find accel, vel at time t0
 	Hit hit;
-	if (!spin->is_collide(*this, hit)) return;
+	if (!track->get_collision(*this, hit)) return;
 
-	// find dist_travel
+	// find accel
 	double t = _DELTA_TIME / 1000.0;  // msec -> sec
-
 	accel = find_force(hit);
+
+	// convert vel to tangent direction (projection formula)
+	// find dist travel
+	double cos_a = Vec3::cos(vel, hit.tangent);
+	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
 	vel = vel + accel * t;
 	double dist = (vel * t).magn();
-	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
-
+	
 	// convert dist_travel to next_pos on curve
 	Vec3 next_pos;
-	if (spin->let_ball_run(dist, next_pos)) {
+	if (track->let_ball_run(dist, next_pos)) {
 		pos = next_pos;
 		pos.y += size;
 	}
-	else {
+	else {	
 		on_track = false;
 	}
 
+	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
+
 	
+}
+
+void Ball::run_on_plane()
+{
+	// find accel, vel at time t0
+	Hit hit;
+	if (!plane->is_collide(*this, hit)) return;
+
+	// find accel
+	double t = _DELTA_TIME / 1000.0;  // msec -> sec
+	accel = find_force(hit);
+
+	// convert vel to tangent direction
+	// find dist travel
+	double cos_a = Vec3::cos(vel, hit.tangent);
+	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
+	vel = vel + accel * t;
+	double dist = (vel * t).magn();
+
+	// convert dist_travel to next_pos on curve
+	Vec3 next_pos;
+	if (plane->let_ball_run(dist, next_pos)) {
+		pos = next_pos;
+		pos.y += size;
+	}
+	else {		
+		on_track = false;	
+	}
+
+	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
+
 }
 
 void Ball::apply_gravity()

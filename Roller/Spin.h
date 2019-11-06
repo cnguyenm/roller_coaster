@@ -3,7 +3,7 @@
 
 
 class Spin :
-	public GameObject
+	public TrackComponent
 {
 public:
 	
@@ -15,10 +15,11 @@ public:
 	void add_curve(Bezier curve);
 	void set_cam(Camera * cam);
 	//void set_ball(Ball * ball);
-	bool let_ball_run(double dist, Vec3& out_pos);
+	double let_ball_run(double dist, Vec3& out_pos);
 
 
 	virtual void draw();
+	virtual void draw(Camera * cam);
 	virtual bool is_collide(GameObject obj, Hit& hit);
 
 private:

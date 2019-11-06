@@ -16,6 +16,11 @@ Bezier _curve_test1;
 RollerTrack track_test1;
 
 Spin spin1;
+SlidingPlane plane1;
+SlidingPlane plane0;
+Track real_track1;
+
+extern GLUI *glui;
 
 void update_edit_window() {
 	glutSetWindow(_edit_win);
@@ -256,30 +261,29 @@ void draw_spin() {
 
 
 	// draw lines
-	glMatrixMode(GL_MODELVIEW);
+	//glMatrixMode(GL_MODELVIEW);
 
-		glPushMatrix();
-		glLoadIdentity();
+	//	glPushMatrix();
+	//	glLoadIdentity();
 
-		// --- draw 
-		_edit_cam.apply();
+	//	// --- draw 
+	//	_edit_cam.apply();
 
-			
-		// draw lines
-		_GREEN.apply();
-		glLineWidth(5.0f);
-		glBegin(GL_LINES);
-			glVertex3d(0, 16 * h, -u);
-			glVertex3d(-10, 16 * h, -u);
-		glEnd();
-		glLineWidth(1.0f);
+	//		
+	//	// draw lines
+	//	_GREEN.apply();
+	//	glLineWidth(5.0f);
+	//	glBegin(GL_LINES);
+	//		glVertex3d(0, 16 * h, -u);
+	//		glVertex3d(-10, 16 * h, -u);
+	//	glEnd();
+	//	glLineWidth(1.0f);
 
-	glPopMatrix();
+	//glPopMatrix();
 
 
 	// draw spin
-	spin1.set_cam(&_edit_cam);
-	spin1.draw();
+	real_track1.draw(&_edit_cam);
 }
 
 void reshape(int width, int height) {
@@ -427,9 +431,24 @@ void design_spin() {
 	// set ball on spin
 	spin1 = Spin({ curve1, curve2, curve3, curve4, curve5, curve6 });
 
-	_ball1.set_init_pos(Vec3(0, 16 * h + _ball1.size, -u));
-	_ball1.set_track(&spin1);
-	_ball1.vel.x = 5;  // give ball a push
+	plane1 = SlidingPlane({
+		{ 0, 0, u},
+		{-3, 0, u}
+	});
+
+	plane0 = SlidingPlane({
+		{-10, 16 * h, -u},
+		{  0, 16 * h, -u}
+	});
+
+	
+	real_track1 = Track({
+		&plane0, &spin1, &plane1
+	});
+
+	_ball1.set_init_pos(Vec3(-10, 16 * h + _ball1.size, -u));
+	_ball1.set_track(&real_track1);
+	_ball1.vel.x = 1;  // give ball a push
 }
 
 void init_gl() {
@@ -508,12 +527,16 @@ void update_edit_win(int value) {
 	glutTimerFunc(_DELTA_TIME, update_edit_win, 1);
 }
 
+void on_edit_close() {
+	printf("close display window\n");
+	_is_playing = false;
+	printf("edit win: %d\n", _edit_win);
+	glui->disable();
+}
 
 int main(int argc, char ** argv) {
 
 	//test();
-
-
 	// init
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);	// enable double bufferd mode
@@ -529,6 +552,7 @@ int main(int argc, char ** argv) {
 	glutKeyboardFunc(handle_keyboard);
 	
 	// set window close, not exit program
+	glutCloseFunc(on_edit_close);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
 	// init

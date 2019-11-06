@@ -2,6 +2,7 @@
 #include <pch.h>
 
 class Spin;  // fix 2 class ref each other
+class SlidingPlane;
 
 class Ball :
 	public GameObject
@@ -13,12 +14,15 @@ public:
 	Camera * cam;
 	Obstacle * obstacle;
 	Spin * spin;
+	TrackComponent * plane;
+	Track * track;
 	Vec3 init_pos;  // pos when ball reset
 
 	Ball();
 	void set_cam(Camera * cam);
 	void set_obstacle(Obstacle * obs);
-	void set_track(Spin * spin);
+	void set_track(Track * track);
+	void set_plane(TrackComponent * plane);
 	
 	virtual void draw();
 	virtual void update();  // called every DELTA_TIME
@@ -30,5 +34,6 @@ private:
 	Vec3 find_force(Hit hit);  // find force between obj, plane
 
 	void run_on_track();
+	void run_on_plane();
 };
 

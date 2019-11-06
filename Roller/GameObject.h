@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include <iostream>
 
+class Camera;
+
 class GameObject
 {
 public:
@@ -24,7 +26,7 @@ public:
 	virtual void set_init_pos(Vec3 pos);
 	virtual void update() {};
 	virtual void draw() {};
-	//virtual void draw(Camera *cam) {};
+	virtual void draw(Camera *cam) {};
 
 	// check if mouse is hovering over
 	// param: mousePos in world_coord

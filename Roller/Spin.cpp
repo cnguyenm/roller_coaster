@@ -21,12 +21,11 @@ void Spin::set_cam(Camera * cam)
 	this->cam = cam;
 }
 
-bool Spin::let_ball_run(double dist, Vec3& out_pos)
+double Spin::let_ball_run(double dist, Vec3& out_pos)
 {
 	double delta_t = dist / curve_list[cur_curve_index].length;
 	double t1 = cur_t - delta_t;  // descending, at top, t=1
-	//printf("delta_t=%.2f ,t1=%d \n",delta_t, t1);
-
+	
 	if (t1 < 0.0) {		
 		double remain_dist = (-t1) * curve_list[cur_curve_index].length;
 		cur_t = 1;
@@ -35,20 +34,47 @@ bool Spin::let_ball_run(double dist, Vec3& out_pos)
 
 		// if out of curve
 		if (cur_curve_index < 0) {
-			return false;
+			out_pos = curve_list[0].control_points[0];
+			return remain_dist;
 		}
 
 		return let_ball_run(remain_dist, out_pos);
 	}
 	else {
+
+		// return point on curve
 		cur_t = t1;
 		out_pos = curve_list[cur_curve_index].get_point_on_curve(t1);
 	}
 
-	return true;
+	return 0;
 }
 
 void Spin::draw()
+{
+	glMatrixMode(GL_MODELVIEW);
+
+	glPushMatrix();
+	glLoadIdentity();
+
+	// --- draw 
+	this->cam->apply();
+	bool color = true;
+
+	for (Bezier curve : curve_list) {
+
+		if (color) _GREEN.apply();
+		else _RED.apply();
+
+		curve.draw();
+		color = !color;
+	}
+
+
+	glPopMatrix();
+}
+
+void Spin::draw(Camera * cam)
 {
 	glMatrixMode(GL_MODELVIEW);
 

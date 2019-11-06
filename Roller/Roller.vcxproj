@@ -167,8 +167,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="play.h" />
     <ClInclude Include="RollerTrack.h" />
+    <ClInclude Include="SlidingPlane.h" />
     <ClInclude Include="Spin.h" />
     <ClInclude Include="TeleportPoint.h" />
+    <ClInclude Include="Track.h" />
+    <ClInclude Include="TrackComponent.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>
   <ItemGroup>
@@ -192,9 +195,12 @@
     <ClCompile Include="play.cpp" />
     <ClCompile Include="Roller.cpp" />
     <ClCompile Include="RollerTrack.cpp" />
+    <ClCompile Include="SlidingPlane.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="Spin.cpp" />
     <ClCompile Include="TeleportPoint.cpp" />
+    <ClCompile Include="Track.cpp" />
+    <ClCompile Include="TrackComponent.cpp" />
     <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

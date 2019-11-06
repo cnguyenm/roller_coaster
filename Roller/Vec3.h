@@ -25,6 +25,9 @@ public:
 	// reduce vector to unit_length
 	Vec3 normalized();
 
+	// angle alpha between 2 vector
+	static double cos(Vec3 a, Vec3 b);
+
 	friend Vec3 operator - (Vec3 other);
 	friend Vec3 operator * (double v, Vec3 vec);
 };

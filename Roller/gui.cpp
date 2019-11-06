@@ -40,6 +40,10 @@ void btn_toggle_play(int control) {
 	}
 
 	// play, or resume
+	if (_edit_win == -1) {
+		printf("Edit win already closed\n");
+		return;
+	}
 	_is_playing = true;  // play.cpp use this
 	update_edit_win(1);
 
@@ -67,7 +71,7 @@ void btn_exit(int control) {
 }
 
 void build_glui(int display_win) {
-
+	
 	// setup
 	//glui = GLUI_Master.create_glui_subwindow(display_win, GLUI_SUBWINDOW_RIGHT);
 	glui = GLUI_Master.create_glui("GLUI", 0, 0, 0);

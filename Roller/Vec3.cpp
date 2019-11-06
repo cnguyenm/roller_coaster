@@ -98,6 +98,11 @@ Vec3 Vec3::normalized()
 	return Vec3(x/m, y/m, z/m);
 }
 
+double Vec3::cos(Vec3 a, Vec3 b)
+{
+	return (a*b) / (a.magn()*b.magn());
+}
+
 // a = Vec3()
 // b = -a
 Vec3 operator-(Vec3 other)
