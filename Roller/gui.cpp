@@ -79,8 +79,10 @@ void build_glui(int display_win) {
 	// static text
 	GLUI_Panel *panel_msg = new GLUI_Panel(glui, "Game message                              ", GLUI_PANEL_EMBOSSED);
 	panel_msg->set_alignment(GLUI_ALIGN_LEFT);
-	game_msg = new GLUI_StaticText(panel_msg, "Empty message");
-	//new GLUI_StaticText(panel3, "Change param before running");
+	game_msg = new GLUI_StaticText(panel_msg, "To move edit_camera:");
+	new GLUI_StaticText(panel_msg, "Use WASD for forward, left, back, right");
+	new GLUI_StaticText(panel_msg, "Use RF for up, down");
+	new GLUI_StaticText(panel_msg, "Use Alt + WASD to rotate");
 
 	// other buttons
 	GLUI_Panel * panel_op = new GLUI_Panel(glui, "Control");
