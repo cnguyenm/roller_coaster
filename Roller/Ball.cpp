@@ -23,12 +23,6 @@ void Ball::set_track(Track * track)
 	this->track = track;
 }
 
-void Ball::set_plane(TrackComponent * plane)
-{
-	this->plane = plane;
-}
-
-
 void Ball::draw()
 {
 	if (!cam) {
@@ -100,9 +94,38 @@ Vec3 Ball::find_force(Hit hit)
 
 	return F;
 }
+//
+//void Ball::run_on_track()
+//{
+//	// find accel, vel at time t0
+//	Hit hit;
+//	if (!track->get_collision(*this, hit)) return;
+//
+//	// find accel
+//	double t = _DELTA_TIME / 1000.0;  // msec -> sec
+//	accel = find_force(hit);
+//
+//	// convert vel to tangent direction (projection formula)
+//	// find dist travel
+//	double cos_a = Vec3::cos(vel, hit.tangent);
+//	if (cos_a == 0) cos_a = 1;  // in case right angle
+//	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
+//	vel = vel + accel * t;
+//	double dist = (vel * t).magn();
+//	
+//	// convert dist_travel to next_pos on curve
+//	Vec3 next_pos;
+//	if (track->let_ball_run(dist, next_pos)) {
+//		pos = next_pos;
+//		pos.y += size;
+//		track->ball_run(dist, this);
+//	}
+//	else {	
+//		on_track = false;
+//	}
+//}
 
-void Ball::run_on_track()
-{
+void Ball::run_on_track() {
 	// find accel, vel at time t0
 	Hit hit;
 	if (!track->get_collision(*this, hit)) return;
@@ -114,23 +137,19 @@ void Ball::run_on_track()
 	// convert vel to tangent direction (projection formula)
 	// find dist travel
 	double cos_a = Vec3::cos(vel, hit.tangent);
+	if (cos_a == 0) cos_a = 1;  // in case right angle
 	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
 	vel = vel + accel * t;
 	double dist = (vel * t).magn();
-	
+
 	// convert dist_travel to next_pos on curve
 	Vec3 next_pos;
-	if (track->let_ball_run(dist, next_pos)) {
-		pos = next_pos;
-		pos.y += size;
-	}
-	else {	
+	double remain_dist = track->ball_run(dist, this);
+	pos.y += size;
+	if (remain_dist > 0) {
+		printf("off track\n");
 		on_track = false;
 	}
-
-	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
-
-	
 }
 
 void Ball::run_on_plane()

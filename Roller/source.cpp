@@ -17,7 +17,8 @@ RollerTrack track_test1;
 
 Spin spin1;
 SlidingPlane plane1;
-SlidingPlane plane0;
+SlidingPlane plane0, plane2, plane3;
+Bezier b1;
 Track real_track1;
 
 extern GLUI *glui;
@@ -310,8 +311,8 @@ void render_edit_win() {
 	glMatrixMode(GL_MODELVIEW);
 
 	// render 
-	draw_ground();
-	//draw_axis();
+	//draw_ground();
+	draw_axis();
 	//draw_cube();
 	//draw_gate();
 	//GameObject * obj = &gate1;
@@ -333,7 +334,7 @@ void render_edit_win() {
 	glutSwapBuffers();
 }
 
-void design_track() {
+void design_roller_track() {
 
 	// --- track1 ---
 	// -------
@@ -379,13 +380,13 @@ void design_track() {
 	track2.process_track();
 }
 
-void design_spin() {
+void design_track2() {
 
 	double radius = 5;
 	double u = radius / 2 + sqrt(radius);
 	double h = 0.5;
 
-	Bezier curve1 = Bezier({
+	Bezier *curve1 = new Bezier({
 		// x, height, y
 		{  0,	0,   u},
 		{u/2,	0,   u},
@@ -393,60 +394,106 @@ void design_spin() {
 		{  u, 2*h,   0}
 	});
 
-	Bezier curve2 = Bezier({
+	Bezier *curve2 = new Bezier({
 		{	u, 2*h,   0},
 		{	u, 3*h, -u/2},
 		{ u/2, 4*h, -u},
 		{	0, 5*h, -u}
-	});
+		}); 
 
-	Bezier curve3 = Bezier({
+	Bezier *curve3 = new Bezier({
 		{   0, 5*h,   -u},
 		{-u/2, 6*h,   -u},
 		{  -u, 7*h, -u/2},
 		{  -u, 8*h,    0}
 	});
 
-	Bezier curve4 = Bezier({
+	Bezier *curve4 = new Bezier({
 		{	-u,  8*h,   0},
 		{	-u,  9*h, u/2},
 		{ -u/2, 10*h,   u},
 		{	 0, 11*h,   u}
-	});
+	}); 
 
-	Bezier curve5 = Bezier({
+	Bezier *curve5 = new Bezier({
 		{  0,	11*h,   u},
 		{u/2,	12*h,   u},
 		{  u,	13*h, u/2},
 		{  u,	14*h,   0}
 	});
 
-	Bezier curve6 = Bezier({
+	Bezier *curve6 = new Bezier({
 		{	u, 14*h,    0},
 		{	u, 15*h, -u/2},
 		{ u/2, 16*h,   -u},
 		{	0, 16*h,   -u}
-	});
+	}); 
+
+	curve2->color = _GREEN;
+	curve4->color = _GREEN;
+	curve6->color = _GREEN;
 
 	// set ball on spin
-	spin1 = Spin({ curve1, curve2, curve3, curve4, curve5, curve6 });
-
-	plane1 = SlidingPlane({
-		{ 0, 0, u},
-		{-3, 0, u}
-	});
-
-	plane0 = SlidingPlane({
+	SlidingPlane *p0 = new SlidingPlane({
 		{-10, 16 * h, -u},
 		{  0, 16 * h, -u}
 	});
 
-	
+	SlidingPlane *p2 = new SlidingPlane({
+		{-15, 19 * h, -u },
+		{-10, 16 * h, -u}
+	});
+
+	SlidingPlane *p1 = new SlidingPlane({
+		{ 0, 0, u},
+		{-3, 0, u}
+	});
+
+	SlidingPlane *p3 = new SlidingPlane({
+		{-3, 0, u},
+		{-5, 0, u}
+	});
+
+	SlidingPlane *p4 = new SlidingPlane({
+		{-5, 0, u},
+		{-9, 5, u}
+	});
+
+
 	real_track1 = Track({
-		&plane0, &spin1, &plane1
+		p2, p0, 
+		curve6, curve5, curve4, curve3, curve2, curve1, 
+		p1, p3, p4
 	});
 
 	_ball1.set_init_pos(Vec3(-10, 16 * h + _ball1.size, -u));
+	_ball1.set_track(&real_track1);
+	_ball1.vel.x = 1;  // give ball a push
+}
+
+void design_track() {
+
+	plane0 = SlidingPlane({
+		{-5, 5, 0},
+		{-1, 1, 0}
+	});
+
+	plane1 = SlidingPlane({
+		{1, 1, 0},
+		{5, 5, 0}
+	});
+
+	b1 = Bezier({
+		{-1, 1, 0},
+		{ 0, 0, 0},
+		{ 0, 0, 0},
+		{ 1, 1, 0}
+	});
+
+	real_track1 = Track({
+		&plane0, &b1, &plane1
+	});
+
 	_ball1.set_track(&real_track1);
 	_ball1.vel.x = 1;  // give ball a push
 }
@@ -471,7 +518,7 @@ void init_game() {
 	gate1.set_cam(&_edit_cam);
 
 	// roller track
-	design_track();
+	design_roller_track();
 
 	// ball
 	_ball1 = Ball();
@@ -508,7 +555,8 @@ void init_game() {
 	track_test1.add_point(Vec3(3, 1, 8));
 
 	// design spin
-	design_spin();
+	//design_spin();
+	design_track2();
 }
 
 // test only
@@ -528,9 +576,10 @@ void update_edit_win(int value) {
 }
 
 void on_edit_close() {
-	printf("close display window\n");
+	printf("[INFO] close display window\n");
+	printf("[INFO] free objects\n");
+	real_track1.free();
 	_is_playing = false;
-	printf("edit win: %d\n", _edit_win);
 	glui->disable();
 }
 

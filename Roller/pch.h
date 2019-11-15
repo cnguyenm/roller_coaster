@@ -23,13 +23,14 @@
 #include "GameObject.h"
 #include "Obstacle.h"
 
+#include "TrackComponent.h"
 #include "Gate.h"
 #include "Bezier.h"
 #include "BezierCurve.h"
 #include "RollerTrack.h"
 
 
-#include "TrackComponent.h"
+
 #include "Track.h"
 #include "Ball.h"
 #include "TeleportPoint.h"

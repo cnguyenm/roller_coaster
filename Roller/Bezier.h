@@ -2,9 +2,8 @@
 
 #include <pch.h>
 
-
 class Bezier : 
-	public GameObject, public Obstacle
+	public TrackComponent
 {
 public:
 	
@@ -18,29 +17,27 @@ public:
 	Bezier();
 	Bezier(const std::vector<Vec3>& controls);
 
-	// set list points
-	void set_points(std::vector<Vec3> p_list);
+	void set_points(std::vector<Vec3> controls);
 	void draw();
+	virtual void draw(Camera * cam);
 	void draw3d();
 	Vec3 get_point_on_curve(double t);
 	Vec3 get_derivative(double t);  // to get tangent at value t
-	virtual bool is_collide(GameObject obj, Hit& hit);
-
-	/*
-	 * no push, pop matrix :(
-	 * handle it outside for now
-	 */
-	static void draw_curve( std::vector<Vec3> ctrl_points, Color color);
+	
+	virtual double get_dist(Vec3 pos);   // get distance from a point
+	virtual void set_start(Vec3 pos);
+	virtual double let_ball_run(double dist, GameObject * obj);
+	virtual double ball_run(double dist, GameObject * obj);
+	virtual bool is_collide(GameObject obj, Hit & hit);
 
 private:
+	double t0 = 0;
 
 	Vec3 interp(Vec3 n1, Vec3 n2, float lambda);
 	void genControlLine();
 	void genCurve();
 	void find_length();
 
-	
-	
 	static double BB(int n, int k, double t);
 	static unsigned nChoosek(unsigned n, unsigned k);
 };

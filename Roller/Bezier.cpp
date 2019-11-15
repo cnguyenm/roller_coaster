@@ -10,14 +10,15 @@ Bezier::Bezier()
 
 Bezier::Bezier(const std::vector<Vec3>& controls) : control_points(controls)
 {
+	this->color = _YELLOW;
 	genControlLine();
 	genCurve();
 	find_length();
 }
 
-void Bezier::set_points(std::vector<Vec3> p_list)
+void Bezier::set_points(std::vector<Vec3> controls)
 {
-	this->control_points = p_list;
+	this->control_points = controls;
 }
 
 void Bezier::draw()
@@ -29,6 +30,24 @@ void Bezier::draw()
 	}
 	glEnd();
 	glLineWidth(1.0f);
+}
+
+void Bezier::draw(Camera * cam)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	cam->apply();
+
+	color.apply();
+	glLineWidth(5.0f);
+		glBegin(GL_LINE_STRIP);
+		for (Vec3 p : points) {
+			glVertex3d(p.x, p.y, p.z);
+		}
+		glEnd();
+	glLineWidth(1.0f);
+	glPopMatrix();
 }
 
 void Bezier::draw3d()
@@ -63,115 +82,6 @@ void Bezier::draw3d()
 		//glVertex3d(p.x, p.y, p.z);
 		glVertex3d(p.x, p.y, p.z - 0.25);
 		glVertex3d(p.x, p.y, p.z + 0.25);
-	}
-	glEnd();
-}
-
-bool Bezier::is_collide(GameObject obj, Hit & out_hit)
-{
-	// see if t, x both increase
-	bool is_increasing = false;  // true if t increase, x increase
-	Vec3 a1 = get_point_on_curve(0.3);
-	Vec3 a2 = get_point_on_curve(0.6);
-	if (a2.x > a1.x) is_increasing = true;
-
-	// if near outside
-	double error = 0.01;
-
-	Vec3 result;
-	double step = 0.01;
-	
-
-	// mid
-	double low  = -0.2;  // because t = [0,1]
-	double high = 1.1;
-	double mid;
-	int count = 0;
-	Vec3 p;
-
-	// binary search
-	while (1) {
-
-		mid = (high + low) / 2.0;
-		p = get_point_on_curve(mid);
-
-		// just take it?
-		if (count > 100) {
-			break;
-		}
-
-		// if equal
-		if (abs(p.x - obj.pos.x) < error) {
-
-			// check dist
-			double dist = (obj.pos - p).magn();
-			//printf("dist=%.2f\n", dist);
-			if (dist > obj.size + 0.01)return false;
-
-			out_hit.pos = p;
-			out_hit.tangent = get_derivative(mid);
-			//printf("hit:%.2f,%.2f,%.2f\n", p.x, p.y, p.z);
-			return true;
-		}
-
-		// if smaller, find larger_half
-		if (p.x < obj.pos.x) {
-
-			if (is_increasing) { low = mid; }
-			else { high = mid; }
-		}
-
-		// if larger, find smaller_half
-		else {
-			if (is_increasing) { high = mid; }
-			else { low = mid; }
-		}
-
-		count += 1;
-	}
-
-	printf("final p: %.2f,%.2f,,%.2f\n", p.x, p.y, p.z);
-	printf("sth wrong\n");
-	return false;
-}
-
-/*
- * no push, pop matrix :(
- * handle it outside for now
- */
-void Bezier::draw_curve(std::vector<Vec3> ctrl_points, Color color)
-{
-
-	// check
-	if (ctrl_points.size() < 3) return;
-
-	Vec3 p, p1;
-	double t;
-	int n = ctrl_points.size() - 1;
-	int k = 0;
-
-	// draw
-	color.apply();
-	glBegin(GL_POINTS);
-
-	for (t = 0.0; t < 1.0; t += 0.001) {
-
-		p = Vec3(0, 0, 0);
-
-		// calc point for each t
-		for (unsigned int i = 0; i < ctrl_points.size(); i++) {
-			// p = p0*B(3,0) + p1*B(3,1) + ... + pn*B(n,n)
-			// p0 * B(n,k) = p0 * nCk * (1-t)^(n-k) * t^k
-			k = i;
-			p1 = ctrl_points[i] * BB(n, k, t);
-			p += p1;
-
-		}
-
-
-		// draw point		
-		glVertex3d(p.x, p.y, p.z);
-
 	}
 	glEnd();
 }
@@ -219,9 +129,10 @@ void Bezier::find_length()
 
 	// divide curve into small segments
 	// sum(length of each segment)
+	length = 0;
 	for (int i = 0; i < points.size() - 1; i++) {
 		double dist = (points[i + 1] - points[i]).magn();
-		this->length += dist;
+		length += dist;
 	}
 
 	
@@ -259,6 +170,76 @@ Vec3 Bezier::get_derivative(double t)
 	sum = sum * n;
 
 	return sum;  // tangent vector
+}
+
+double Bezier::get_dist(Vec3 pos)
+{
+	double dist1 = (control_points[0] - pos).magn();
+	double dist2 = (control_points[3] - pos).magn();
+	return fmin(dist1, dist2);
+}
+
+void Bezier::set_start(Vec3 pos)
+{
+	double dist1 = (control_points[0] - pos).magn();
+	double dist2 = (control_points[3] - pos).magn();
+	if (dist1 < dist2) t0 = 0;
+	else t0 = 1;
+}
+
+double Bezier::let_ball_run(double dist, GameObject * obj)
+{
+	
+	return 0.0;
+}
+
+double Bezier::ball_run(double dist, GameObject * obj)
+{
+	// check if ball reverse direction
+	Vec3 tangent = get_derivative(t0);
+	Vec3 vel = obj->vel;
+	double cos_a = tangent * vel;
+	bool is_reverse = true;
+	if (cos_a > 0) {
+		is_reverse = false;
+	}
+	else {}
+
+	// move ball
+	double delta_t = dist / length;
+	double t1;
+	
+	if (!is_reverse) {
+		t1 = t0 + delta_t;
+	}
+	else {
+		t1 = t0 - delta_t;
+	}
+	
+	// see if it overshoot
+	if (t1 > 1) {
+		obj->pos = control_points[3];
+		return (t1 - 1)*length;
+	}
+	// negative
+	else if (t1 < 0) {
+		obj->pos = control_points[0];
+		return (-t1)*length;
+	}
+	else {
+		obj->pos = get_point_on_curve(t1);
+		t0 = t1;
+	}
+
+	return 0.0;
+}
+
+bool Bezier::is_collide(GameObject obj, Hit & hit)
+{
+	hit.tangent = get_derivative(t0);
+	hit.pos = get_point_on_curve(t0);
+
+	return true;
 }
 
 double Bezier::BB(int n, int k, double t)
