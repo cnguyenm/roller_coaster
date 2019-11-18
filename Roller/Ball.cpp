@@ -141,6 +141,9 @@ void Ball::run_on_track() {
 	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
 	vel = vel + accel * t;
 	double dist = (vel * t).magn();
+	printf("accel=(%.2f,%.2f,%.2f)|vel=(%.2f,%.2f,%.2f)\n", 
+		accel.x, accel.y, accel.z, 
+		vel.x, vel.y,vel.z);
 
 	// convert dist_travel to next_pos on curve
 	Vec3 next_pos;

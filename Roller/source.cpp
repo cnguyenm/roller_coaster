@@ -556,7 +556,7 @@ void init_game() {
 
 	// design spin
 	//design_spin();
-	design_track2();
+	design_track();
 }
 
 // test only

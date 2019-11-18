@@ -50,7 +50,6 @@ double Track::ball_run(double dist, GameObject * obj)
 		if (i == cur_component) continue;
 
 		double dist = component_list[i]->get_dist(obj->pos);
-		printf("dist: %.2f\n", dist);
 		if (abs(dist - 0.0) < error) {
 			min_component = i;
 			break;
@@ -58,7 +57,6 @@ double Track::ball_run(double dist, GameObject * obj)
 	}
 
 	// check valid
-	printf("min: %d\n", min_component);
 	if (min_component == -1) return remain_dist;
 
 	// set start
