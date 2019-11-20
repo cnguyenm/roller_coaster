@@ -495,7 +495,9 @@ void design_track() {
 	});
 
 	_ball1.set_track(&real_track1);
-	_ball1.vel.x = 1;  // give ball a push
+	plane0.t0 = 0.2;
+
+	//_ball1.vel.x = 1;  // give ball a push
 }
 
 void init_gl() {

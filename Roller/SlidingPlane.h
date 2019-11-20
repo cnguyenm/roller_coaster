@@ -6,6 +6,7 @@ class SlidingPlane :
 {
 public:
 	std::vector<Vec3> control_points;
+	double t0 = 0.0;  // cur t
 
 	// for timebeing, let sliding plane have 2 points
 	SlidingPlane();
@@ -21,7 +22,7 @@ public:
 	virtual void set_start(Vec3 pos);
 
 private:
-	double t0 = 0.0;  // cur t
+	
 	double length;
 	Vec3 direction;
 

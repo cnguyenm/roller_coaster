@@ -137,10 +137,14 @@ void Ball::run_on_track() {
 	// convert vel to tangent direction (projection formula)
 	// find dist travel
 	double cos_a = Vec3::cos(vel, hit.tangent);
-	if (cos_a == 0) cos_a = 1;  // in case right angle
+	if (cos_a >= 0) cos_a = 1;
+	else cos_a = -1;
+
 	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
 	vel = vel + accel * t;
 	double dist = (vel * t).magn();
+	printf("vel=%.2f|", vel.magn());
+	printf("cos_a=%.2f|", cos_a);
 	printf("accel=(%.2f,%.2f,%.2f)|vel=(%.2f,%.2f,%.2f)\n", 
 		accel.x, accel.y, accel.z, 
 		vel.x, vel.y,vel.z);
@@ -148,7 +152,7 @@ void Ball::run_on_track() {
 	// convert dist_travel to next_pos on curve
 	Vec3 next_pos;
 	double remain_dist = track->ball_run(dist, this);
-	pos.y += size;
+	//pos.y += size;
 	if (remain_dist > 0) {
 		printf("off track\n");
 		on_track = false;
