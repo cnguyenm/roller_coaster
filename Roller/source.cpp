@@ -113,10 +113,32 @@ void draw_axis() {
 	glPopMatrix();
 }
 
-void draw_gate() {
+void draw_pillar(Camera * cam) {
 
-	
+	double radius = 5;
+	double u = radius / 2 + sqrt(radius);
+	double h = 0.5;
 
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	// --- draw 
+	glLoadIdentity();
+	cam->apply();
+
+	glLineWidth(5.0f);
+	glBegin(GL_LINES);
+	_BLUE.apply();
+		// front pillar
+		glVertex3d(0, 0, u);
+		glVertex3d(0, 23*h,  u);
+
+		// back pillar
+		glVertex3d(0, 0, -u);
+		glVertex3d(0, 28 * h, -u);
+
+	glEnd();
+	glLineWidth(1.0f);
 }
 
 void draw_spin() {
@@ -136,7 +158,7 @@ void draw_spin() {
 
 		glRotated(-90, 1, 0, 0);
 		_WHITE.apply();
-		glutWireCylinder(5.0f, 10.0f, 50, 20);  // radius=2, height=5
+		glutWireCylinder(5.0f, 10.0f, 50, 20); 
 
 
 	glPopMatrix();
@@ -170,6 +192,7 @@ void render_edit_win() {
 
 	// render 
 	draw_axis();
+	draw_pillar(&_edit_cam);
 	_ball1.set_cam(&_edit_cam);
 	_ball1.draw();
 	

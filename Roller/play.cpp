@@ -11,6 +11,8 @@ extern Ball _ball1;
 extern TeleportPoint tp_point1;
 extern Track real_track1;
 
+void draw_pillar(Camera * cam);  // source.cpp
+
 double _playcam_fov = 50.0;
 int play_width;
 int play_height;
@@ -87,6 +89,7 @@ void render_play_win() {
 	// render 
 	glMatrixMode(GL_MODELVIEW);
 	draw_axis2();
+	draw_pillar(&_play_cam);
 	_ball1.set_cam(&_play_cam); _ball1.draw();
 	real_track1.draw(&_play_cam);
 	
