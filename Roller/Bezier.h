@@ -31,7 +31,7 @@ public:
 	virtual bool is_collide(GameObject obj, Hit & hit);
 
 private:
-	double t0 = 0;
+	//double t0 = 0;
 
 	Vec3 interp(Vec3 n1, Vec3 n2, float lambda);
 	void genControlLine();

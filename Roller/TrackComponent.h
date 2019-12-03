@@ -2,6 +2,7 @@
 class TrackComponent : public GameObject
 {
 public:
+	double t0 = 0.0;  // cur t
 	TrackComponent();
 	
 	virtual bool is_collide(GameObject obj, Hit & hit) { return false; };

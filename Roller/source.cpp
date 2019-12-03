@@ -386,7 +386,7 @@ void design_track2() {
 	double u = radius / 2 + sqrt(radius);
 	double h = 0.5;
 
-	Bezier *curve1 = new Bezier({
+	Bezier *curve1a = new Bezier({
 		// x, height, y
 		{  0,	0,   u},
 		{u/2,	0,   u},
@@ -394,54 +394,86 @@ void design_track2() {
 		{  u, 2*h,   0}
 	});
 
-	Bezier *curve2 = new Bezier({
+	Bezier *curve1b = new Bezier({
 		{	u, 2*h,   0},
 		{	u, 3*h, -u/2},
 		{ u/2, 4*h, -u},
 		{	0, 5*h, -u}
 		}); 
 
-	Bezier *curve3 = new Bezier({
+	Bezier *curve1c = new Bezier({
 		{   0, 5*h,   -u},
 		{-u/2, 6*h,   -u},
 		{  -u, 7*h, -u/2},
 		{  -u, 8*h,    0}
 	});
 
-	Bezier *curve4 = new Bezier({
+	Bezier *curve1d = new Bezier({
 		{	-u,  8*h,   0},
 		{	-u,  9*h, u/2},
 		{ -u/2, 10*h,   u},
 		{	 0, 11*h,   u}
 	}); 
 
-	Bezier *curve5 = new Bezier({
+	Bezier *curve2a = new Bezier({
 		{  0,	11*h,   u},
 		{u/2,	12*h,   u},
 		{  u,	13*h, u/2},
 		{  u,	14*h,   0}
 	});
 
-	Bezier *curve6 = new Bezier({
+	Bezier *curve2b = new Bezier({
 		{	u, 14*h,    0},
 		{	u, 15*h, -u/2},
 		{ u/2, 16*h,   -u},
-		{	0, 16*h,   -u}
+		{	0, 17*h,   -u}
 	}); 
 
-	curve2->color = _GREEN;
-	curve4->color = _GREEN;
-	curve6->color = _GREEN;
+	Bezier * curve2c = new Bezier({
+		{	0, 17*h, -u},
+		{-u/2, 18*h, -u},
+		{  -u, 19*h,-u/2},
+		{  -u, 20*h,   0}
+	});
+
+	Bezier * curve2d = new Bezier({
+		{  -u, 20*h,  0},
+		{  -u, 21*h,u/2},
+		{-u/2, 22*h,  u},
+		{   0, 23*h,  u}
+	});
+
+	Bezier * curve3a = new Bezier({
+		{  0, 23*h,  u},
+		{u/2, 24*h,  u},
+		{  u, 25*h,u/2},
+		{  u, 26*h,  0}
+	});
+
+	Bezier * curve3b = new Bezier({
+		{  u, 26*h,   0},
+		{  u, 27*h,-u/2},
+		{u/2, 28*h,  -u},
+		{  0, 28*h,  -u}
+	});
+
+	curve1b->color = _GREEN;
+	curve1d->color = _GREEN;
+	curve2b->color = _GREEN;
+	curve2d->color = _GREEN;
+	curve3b->color = _GREEN;
+	//curve3d->color = _GREEN;
 
 	// set ball on spin
 	SlidingPlane *p0 = new SlidingPlane({
-		{-10, 16 * h, -u},
-		{  0, 16 * h, -u}
+		{-10, 28*h, -u},
+		{  0, 28*h, -u}
 	});
+	p0->color = _YELLOW;
 
 	SlidingPlane *p2 = new SlidingPlane({
-		{-15, 19 * h, -u },
-		{-10, 16 * h, -u}
+		{-15, 32*h, -u },
+		{-10, 28*h, -u}
 	});
 
 	SlidingPlane *p1 = new SlidingPlane({
@@ -456,17 +488,19 @@ void design_track2() {
 
 	SlidingPlane *p4 = new SlidingPlane({
 		{-5, 0, u},
-		{-9, 5, u}
+		{-15, 10, u}
 	});
 
 
 	real_track1 = Track({
 		p2, p0, 
-		curve6, curve5, curve4, curve3, curve2, curve1, 
+		curve3b,curve3a,curve2d,curve2c,curve2b,curve2a,
+		curve1d,curve1c,curve1b,curve1a,
 		p1, p3, p4
 	});
+	p2->t0 = 0.2;
 
-	_ball1.set_init_pos(Vec3(-10, 16 * h + _ball1.size, -u));
+	_ball1.set_init_pos(Vec3(-15, 32*h + _ball1.size, -u));
 	_ball1.set_track(&real_track1);
 	_ball1.vel.x = 1;  // give ball a push
 }
@@ -512,7 +546,7 @@ void init_gl() {
 
 void init_game() {
 	_edit_cam = Camera();
-	_edit_cam.pos = Vec3(0, 10, 20);
+	_edit_cam.pos = Vec3(-10, 25, 30);
 	//_edit_cam.pos = Vec3(0, 5, 40);
 	//_edit_cam.pos = Vec3(0, 1, 10);  // position of play_cam, maybe
 	
@@ -524,7 +558,7 @@ void init_game() {
 
 	// ball
 	_ball1 = Ball();
-	_ball1.size = 0.25;
+	_ball1.size = 0.1;
 	_ball1.set_init_pos(Vec3(-9, 8.5, 0));
 	_ball1.set_cam(&_edit_cam);
 	_ball1.set_obstacle(&track1);
@@ -558,7 +592,7 @@ void init_game() {
 
 	// design spin
 	//design_spin();
-	design_track();
+	design_track2();
 }
 
 // test only

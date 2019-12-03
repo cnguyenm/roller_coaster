@@ -21,6 +21,7 @@ public:
 
 	double ball_run(double dist, GameObject * obj);
 	virtual void draw(Camera * cam);
+	void reset();
 
 	// free
 	void free();

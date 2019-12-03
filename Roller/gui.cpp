@@ -5,7 +5,10 @@
 GLUI *glui;
 GLUI_StaticText * game_msg;
 void update_edit_win(int value);  // from source.cpp
-
+void reset_play();  // from play.cpp
+void reshape_play_win();  // from play.cpp
+void render_play_win();  // play.cpp
+int gui_fov;
 
 enum GLUI_CUST_ID {
 	ID_PLAY, ID_PAUSE, ID_RESET,
@@ -45,10 +48,11 @@ void btn_toggle_play(int control) {
 		return;
 	}
 	_is_playing = true;  // play.cpp use this
-	update_edit_win(1);
-
-	//if (_play_win == -1) start_play_window(); // if not window
-	//else update_play_win(1);
+	
+	if (_play_win == -1) start_play_window(); // if not window
+	else update_play_win(1);
+	
+	//update_edit_win(1);
 
 
 	glutSetWindow(_edit_win);
@@ -56,7 +60,8 @@ void btn_toggle_play(int control) {
 }
 
 void btn_reset_play(int control) {
-
+	
+	reset_play();
 }
 
 void btn_close_play(int control) {
@@ -68,6 +73,16 @@ void btn_close_play(int control) {
 
 void btn_exit(int control) {
 	exit(1);
+}
+
+void on_fov_change(int control) {
+	// set share var
+	_playcam_fov = gui_fov;
+
+	// update display
+	glutSetWindow(_play_win);
+	glutPostRedisplay();
+	//render_play_win();
 }
 
 void build_glui(int display_win) {
@@ -87,9 +102,13 @@ void build_glui(int display_win) {
 	// other buttons
 	GLUI_Panel * panel_op = new GLUI_Panel(glui, "Control");
 	panel_op->set_alignment(GLUI_ALIGN_LEFT);
+	GLUI_Spinner * fov_spinner = new GLUI_Spinner(panel_op, "FOV:", &gui_fov, -1, on_fov_change);
+	fov_spinner->set_int_limits(50, 75);
+	fov_spinner->set_alignment(GLUI_ALIGN_LEFT);
+
 	new GLUI_Button(panel_op, "Play/Pause", ID_PLAY, btn_toggle_play);
-	
 	new GLUI_Button(panel_op, "Close Play", ID_CLOSE_PLAY, btn_close_play);
+	new GLUI_Button(panel_op, "Reset", ID_RESET, btn_reset_play);
 	new GLUI_Button(panel_op, "Exit", ID_EXIT, btn_exit);
 
 }

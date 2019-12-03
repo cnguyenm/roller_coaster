@@ -16,16 +16,17 @@ public:
 	Spin * spin;
 	TrackComponent * plane;
 	Track * track;
-	Vec3 init_pos;  // pos when ball reset
+	
 
 	Ball();
 	void set_cam(Camera * cam);
 	void set_obstacle(Obstacle * obs);
 	void set_track(Track * track);
-	void set_plane(TrackComponent * plane);
+	//void set_plane(TrackComponent * plane);
 	
 	virtual void draw();
 	virtual void update();  // called every DELTA_TIME
+	void reset_pos();
 
 private:
 	void apply_gravity();

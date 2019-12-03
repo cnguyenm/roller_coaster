@@ -11,6 +11,11 @@ extern Ball _ball1;
 extern RollerTrack track1;
 extern RollerTrack track2;
 extern TeleportPoint tp_point1;
+extern Track real_track1;
+
+double _playcam_fov = 50.0;
+int play_width;
+int play_height;
 
 void render_edit_win();  // define in source.cpp
 
@@ -105,27 +110,43 @@ void reshape2(int width, int height) {
 
 	// set view port
 	glViewport(0, 0, width, height);
-
+	play_width = width;
+	play_height = height;
+	
 	// set aspect ratio of clipping volumne to match viewport
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	// enble perspective projection 
-	gluPerspective(45.0, aspect, 0.1f, 100.f);
+	gluPerspective(_playcam_fov, aspect, 0.1f, 100.f);
 
+}
+
+void reshape_play_win() {
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	// enble perspective projection 
+	double aspect = (double)play_width / (double)play_height;
+	gluPerspective(_playcam_fov, aspect, 0.1f, 100.f);
 }
 
 void render_play_win() {
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color buffer (background)
+	
+	// perspective
+	reshape_play_win();
+
 	glMatrixMode(GL_MODELVIEW);
 
 	// render 
 	
 	_ball1.set_cam(&_play_cam);
-	track1.set_cam(&_play_cam);
-	track2.set_cam(&_play_cam);
+	//track1.set_cam(&_play_cam);
+	//track2.set_cam(&_play_cam);
 
 	//_play_cam.pos = _ball1.pos;
 	//_play_cam.pos.y += _ball1.size;
@@ -134,9 +155,10 @@ void render_play_win() {
 
 	draw_axis2();
 	_ball1.draw();
+	real_track1.draw(&_play_cam);
 	//track1.draw();
-	track1.draw3d();
-	track2.draw3d();
+	//track1.draw3d();
+	//track2.draw3d();
 
 	glutSwapBuffers();
 }
@@ -165,20 +187,43 @@ void update_play_win(int value) {
 
 	// update objects
 	_ball1.update();
-	tp_point1.update();
-	_play_cam.update();
+	//tp_point1.update();
+	_play_cam.update();  // auto-update ball on track
 	
-
-	// play win
+	// edit win
 	glutSetWindow(_edit_win);
 	render_edit_win();
 
-	// edit win
+	// play win
 	glutSetWindow(_play_win);
 	render_play_win();
 
 	
 	glutTimerFunc(_DELTA_TIME, update_play_win, 1);
+}
+
+void reset_play() {
+
+	// pause game
+	_is_playing = false;
+
+	// reset obj
+	_ball1.reset_pos();
+	_ball1.vel = Vec3(0.5, -0.2, 0);  // so camera knows where to look
+
+	_play_cam.update();
+	real_track1.reset();
+
+	// re-display
+	// edit win
+	glutSetWindow(_edit_win);
+	render_edit_win();
+
+	// play win
+	glutSetWindow(_play_win);
+	render_play_win();
+
+
 }
 
 int start_play_window() {

@@ -87,7 +87,7 @@ void SlidingPlane::draw(Camera * cam)
 	cam->apply();
 
 		color.apply();
-		glLineWidth(5.0f);
+		glLineWidth(10.0f);
 		glBegin(GL_LINES);
 		for (Vec3 p : control_points) {
 			glVertex3d(p.x, p.y, p.z);

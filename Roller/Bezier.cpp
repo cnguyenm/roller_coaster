@@ -40,7 +40,7 @@ void Bezier::draw(Camera * cam)
 	cam->apply();
 
 	color.apply();
-	glLineWidth(5.0f);
+	glLineWidth(10.0f);
 		glBegin(GL_LINE_STRIP);
 		for (Vec3 p : points) {
 			glVertex3d(p.x, p.y, p.z);

@@ -16,8 +16,7 @@ extern bool _is_playing;
 extern double _DELTA_TIME;
 extern double _GRAVITY_FORCE;
 
-// define in play.cpp
-extern int _play_win;
 
+extern int _play_win;  // play.cpp
 extern int _edit_win;  // source.cpp
-
+extern double _playcam_fov;  // play.cpp
