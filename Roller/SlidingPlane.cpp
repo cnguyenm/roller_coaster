@@ -21,24 +21,6 @@ bool SlidingPlane::is_collide(GameObject obj, Hit & hit)
 	return true;
 }
 
-double SlidingPlane::let_ball_run(double dist, Vec3& new_pos)
-{
-	// move ball along that dir
-	double delta_t = dist / length;
-
-	double t1 = t0 + delta_t;
-	if (t1 > 1) {
-		new_pos = control_points[1];
-		return (t1-1)*length;
-	}
-	else {
-		new_pos = control_points[0] + t1 * length*direction;
-		t0 = t1;
-	}
-
-	return 0;
-}
-
 double SlidingPlane::ball_run(double dist, GameObject * obj)
 {
 	// check if ball reverse direction

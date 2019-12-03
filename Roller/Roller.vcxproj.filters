@@ -30,22 +30,10 @@
     <ClInclude Include="Vec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Gate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gui.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gameshare.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="play.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RollerTrack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bezier.h">
@@ -54,19 +42,7 @@
     <ClInclude Include="Ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Obstacle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="edit_win.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TeleportPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BezierCurve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Track.h">
@@ -78,12 +54,15 @@
     <ClInclude Include="SlidingPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gameshare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Roller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source.cpp">
@@ -104,9 +83,6 @@
     <ClCompile Include="play.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -116,25 +92,13 @@
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RollerTrack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bezier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Ball.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Obstacle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TeleportPoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BezierCurve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Spin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Track.cpp">

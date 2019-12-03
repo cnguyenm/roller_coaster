@@ -17,8 +17,7 @@ public:
 
 	// assume collision
 	bool get_collision(GameObject obj, Hit& out_hit);
-	bool let_ball_run(double dist, Vec3& next_pos);
-
+	
 	double ball_run(double dist, GameObject * obj);
 	virtual void draw(Camera * cam);
 	void reset();

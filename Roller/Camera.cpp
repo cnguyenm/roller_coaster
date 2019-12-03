@@ -24,30 +24,6 @@ void Camera::apply()
 	glRotated(this->angle_x_axis, 1, 0, 0);
 }
 
-void Camera::move_left(double value)
-{
-	pos.x -= value;
-	center.x -= value;
-}
-
-void Camera::move_right(double value)
-{
-	pos.x += value;
-	center.x += value;
-}
-
-void Camera::move_up(double value)
-{
-	pos.y += value;
-	center.y += value;
-}
-
-void Camera::move_down(double value)
-{
-	pos.y -= value;
-	center.y -= value;
-}
-
 void Camera::move_relative(double x, double y, double z)
 {
 	this->pos += Vec3(x, y, z);

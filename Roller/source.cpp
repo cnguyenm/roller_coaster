@@ -5,20 +5,11 @@
 
 int _edit_win;
 Camera _edit_cam;
-Gate gate1;
-RollerTrack track1;
-RollerTrack track2;
 TeleportPoint tp_point1;
 
 Ball _ball1;
-
-Bezier _curve_test1;
-RollerTrack track_test1;
-
-Spin spin1;
 SlidingPlane plane1;
 SlidingPlane plane0, plane2, plane3;
-Bezier b1;
 Track real_track1;
 
 extern GLUI *glui;
@@ -81,23 +72,6 @@ void handle_keyboard(unsigned char key, int x, int y) {
 	update_edit_window();
 }
 
-void draw_ground() {
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-
-	// --- draw 
-	glLoadIdentity();
-	_edit_cam.apply();
-	_GREY.apply();
-	glBegin(GL_QUADS);
-		glVertex3d(-10, 0, 10);
-		glVertex3d( 10, 0, 10);
-		glVertex3d( 10, 0, -10);
-		glVertex3d( -10, 0, -10);
-	glEnd();
-	glPopMatrix();
-}
-
 void draw_axis() {
 
 	glMatrixMode(GL_MODELVIEW);
@@ -139,103 +113,10 @@ void draw_axis() {
 	glPopMatrix();
 }
 
-void draw_cube() {
-
-	glMatrixMode(GL_MODELVIEW);
-	
-	glPushMatrix();
-	glLoadIdentity();
-
-		// --- draw 
-		_edit_cam.apply();
-
-		_GREEN.apply();
-		glTranslatef(0, 0.5, 0);  // position of cube_center
-		glutWireCube(1);
-		// --- /draw
-
-	glPopMatrix();
-}
-
 void draw_gate() {
 
-	double h = 3.0;  // height
-	double w = 6.0;  // width
-	double d = 4.0;  // depth
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	_edit_cam.apply();
-	// --- draw 
-	// position counter-clock wise, with normal pointing out
-	// for lighting
-	glBegin(GL_QUADS);
-
-		// left
-		_BLUE.apply();
-		glVertex3d(-w/2, 0, 0);
-		glVertex3d(-w/2, h, 0);
-		glVertex3d(-w/2, h, -d);
-		glVertex3d(-w/2, 0, -d);
-
-		// right
-		_YELLOW.apply();
-		glVertex3d(w/2, 0, -d);
-		glVertex3d(w/2, h, -d);
-		glVertex3d(w/2, h, 0);
-		glVertex3d(w/2, 0, 0);
-
-		// top
-		_RED.apply();
-		glVertex3d(w/2, h, 0);
-		glVertex3d(w/2, h, -d);
-		glVertex3d(-w/2, h, -d);
-		glVertex3d(-w/2, h, 0);
-
-	glEnd();
-	// --- /draw
-	glPopMatrix();
-
-}
-
-void draw_line() {
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-	_edit_cam.apply();
-
-
-	// --- draw 
 	
-	glBegin(GL_LINES);
-	_GREEN.apply();
 
-		//1st line
-		glVertex3d(-10, 3, 0);
-		glVertex3d(  3, 3, 0);
-
-		//2nd line
-		glVertex3d(5, 2, 0);
-		glVertex3d(8, 0, 0);
-	glEnd();
-
-	// --- /draw
-	glPopMatrix();
-}
-
-void draw_test_curve() {
-	
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	_edit_cam.apply();
-
-	_curve_test1.draw3d();
-
-	glPopMatrix();
 }
 
 void draw_spin() {
@@ -260,30 +141,7 @@ void draw_spin() {
 
 	glPopMatrix();
 
-
-	// draw lines
-	//glMatrixMode(GL_MODELVIEW);
-
-	//	glPushMatrix();
-	//	glLoadIdentity();
-
-	//	// --- draw 
-	//	_edit_cam.apply();
-
-	//		
-	//	// draw lines
-	//	_GREEN.apply();
-	//	glLineWidth(5.0f);
-	//	glBegin(GL_LINES);
-	//		glVertex3d(0, 16 * h, -u);
-	//		glVertex3d(-10, 16 * h, -u);
-	//	glEnd();
-	//	glLineWidth(1.0f);
-
-	//glPopMatrix();
-
-
-	// draw spin
+	// draw track
 	real_track1.draw(&_edit_cam);
 }
 
@@ -311,73 +169,14 @@ void render_edit_win() {
 	glMatrixMode(GL_MODELVIEW);
 
 	// render 
-	//draw_ground();
 	draw_axis();
-	//draw_cube();
-	//draw_gate();
-	//GameObject * obj = &gate1;
-	//obj->draw();
-	//draw_line();
-	//track1.set_cam(&_edit_cam);
-	//track2.set_cam(&_edit_cam);
 	_ball1.set_cam(&_edit_cam);
-	//track_test1.set_cam(&_edit_cam);
-
-	//track1.draw3d();
-	//track2.draw3d();
 	_ball1.draw();
-	//draw_test_curve();
-	//track_test1.draw3d();
-
+	
+	// draw track
 	draw_spin();
 
 	glutSwapBuffers();
-}
-
-void design_roller_track() {
-
-	// --- track1 ---
-	// -------
-	track1 = RollerTrack();
-	track1.set_cam(&_edit_cam);
-	track1.set_init_pos(Vec3(0, 0, 0));
-
-	// slide for ball to gain vel
-	track1.add_point(Vec3(-10, 8, 0));
-	track1.add_point(Vec3(-7, 7, 0));
-
-	track1.add_point(Vec3(-5, 6, 0));
-	track1.add_point(Vec3(-1, 6, 0));
-
-	track1.add_point(Vec3(3, 4, 0));
-	track1.add_point(Vec3(6, 2, 0));
-
-	track1.add_point(Vec3(9, 2, 0));
-	track1.add_point(Vec3(12, 4, 0));
-
-	track1.add_point(Vec3(15, 6, 0));
-	track1.add_point(Vec3(19, 6, 0));
-	track1.process_track();
-
-	// --- track2 ---
-	// -------
-	track2 = RollerTrack();
-	track2.set_cam(&_edit_cam);
-	track2.set_init_pos(Vec3(20, 0, 0));
-
-	// overlap 1st horizontal of track1
-	track2.add_point(Vec3(-5, 6, 0));
-	track2.add_point(Vec3(-1, 6, 0));
-
-	track2.add_point(Vec3(3, 4, 0));
-	track2.add_point(Vec3(6, 2, 0));
-
-	track2.add_point(Vec3(9, 2, 0));
-	track2.add_point(Vec3(12, 4, 0));
-
-	track2.add_point(Vec3(15, 6, 0));
-	track2.add_point(Vec3(19, 6, 0));
-	track2.process_track();
 }
 
 void design_track2() {
@@ -505,35 +304,6 @@ void design_track2() {
 	_ball1.vel.x = 1;  // give ball a push
 }
 
-void design_track() {
-
-	plane0 = SlidingPlane({
-		{-5, 5, 0},
-		{-1, 1, 0}
-	});
-
-	plane1 = SlidingPlane({
-		{1, 1, 0},
-		{5, 5, 0}
-	});
-
-	b1 = Bezier({
-		{-1, 1, 0},
-		{ 0, 0, 0},
-		{ 0, 0, 0},
-		{ 1, 1, 0}
-	});
-
-	real_track1 = Track({
-		&plane0, &b1, &plane1
-	});
-
-	_ball1.set_track(&real_track1);
-	plane0.t0 = 0.2;
-
-	//_ball1.vel.x = 1;  // give ball a push
-}
-
 void init_gl() {
 	glClearColor(0.0, 0.0, 0.0, 0); // set background to black
 	glClearDepth(1.0f); // set background depth to farthest
@@ -547,21 +317,12 @@ void init_gl() {
 void init_game() {
 	_edit_cam = Camera();
 	_edit_cam.pos = Vec3(-10, 25, 30);
-	//_edit_cam.pos = Vec3(0, 5, 40);
-	//_edit_cam.pos = Vec3(0, 1, 10);  // position of play_cam, maybe
 	
-	gate1 = Gate();
-	gate1.set_cam(&_edit_cam);
-
-	// roller track
-	design_roller_track();
-
 	// ball
 	_ball1 = Ball();
 	_ball1.size = 0.1;
 	_ball1.set_init_pos(Vec3(-9, 8.5, 0));
 	_ball1.set_cam(&_edit_cam);
-	_ball1.set_obstacle(&track1);
 
 	// tp point
 	tp_point1 = TeleportPoint();
@@ -569,29 +330,7 @@ void init_game() {
 	tp_point1.set_init_pos(Vec3(16, 6, 0));
 	tp_point1.destination = Vec3(-4, 6, 0);
 
-
-	// bezier 3d, space curve
-	_curve_test1 = Bezier();
-	std::vector<Vec3> p_list1;
-	p_list1.push_back(Vec3(-2, 5, 2));
-	p_list1.push_back(Vec3(3, 5, 2));
-	p_list1.push_back(Vec3(3, 1, 6));
-	p_list1.push_back(Vec3(3, 1, 12));
-	
-	_curve_test1.set_points(p_list1);
-	track_test1 = RollerTrack();
-	track_test1.set_cam(&_edit_cam);
-	track_test1.set_init_pos(Vec3(0, 0, 0));
-
-	// slide for ball to gain vel
-	track_test1.add_point(Vec3(-2, 5, 2));
-	track_test1.add_point(Vec3(3, 5, 2));
-
-	track_test1.add_point(Vec3(3, 1, 4));
-	track_test1.add_point(Vec3(3, 1, 8));
-
 	// design spin
-	//design_spin();
 	design_track2();
 }
 

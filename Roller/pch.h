@@ -21,20 +21,13 @@
 #include "Vec3.h"
 #include "Color.h"
 #include "GameObject.h"
-#include "Obstacle.h"
 
 #include "TrackComponent.h"
-#include "Gate.h"
 #include "Bezier.h"
-#include "BezierCurve.h"
-#include "RollerTrack.h"
-
-
 
 #include "Track.h"
 #include "Ball.h"
 #include "TeleportPoint.h"
-#include "Spin.h"
 #include "SlidingPlane.h"
 
 #include "gui.h"

@@ -13,7 +13,6 @@ public:
 	SlidingPlane(const std::vector<Vec3>& control_points);
 	
 	virtual bool is_collide(GameObject obj, Hit & hit);
-	virtual double let_ball_run(double dist, Vec3& new_pos);
 	virtual double ball_run(double dist, GameObject * obj);
 	virtual void draw(Camera * cam);
 

@@ -8,8 +8,6 @@ Camera _play_cam;
 
 // define in source.cpp
 extern Ball _ball1;
-extern RollerTrack track1;
-extern RollerTrack track2;
 extern TeleportPoint tp_point1;
 extern Track real_track1;
 
@@ -42,66 +40,12 @@ void draw_axis2() {
 		glVertex3d(i, 0, 30.0);
 	}
 
-	// x
-	//glVertex3f(0, 0, 0);
-	//glVertex3f(5, 0, 0);
-
-	//// y
-	//glVertex3f(0, 0, 0);
-	//glVertex3f(0, 5, 0);
-
-	//// z
-	//glVertex3f(0, 0, 0);
-	//glVertex3f(0, 0, 5);
 	glEnd();
 
 	// --- /draw
 
 	glPopMatrix();
 }
-
-inline void draw_gate() {
-
-	double h = 3.0;  // height
-	double w = 6.0;  // width
-	double d = 4.0;  // depth
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	_play_cam.apply();
-	// --- draw 
-	// position counter-clock wise, with normal pointing out
-	// for lighting
-	glBegin(GL_QUADS);
-
-		// left
-		_BLUE.apply();
-		glVertex3d(-w / 2, 0, 0);
-		glVertex3d(-w / 2, h, 0);
-		glVertex3d(-w / 2, h, -d);
-		glVertex3d(-w / 2, 0, -d);
-
-		// right
-		_YELLOW.apply();
-		glVertex3d(w / 2, 0, -d);
-		glVertex3d(w / 2, h, -d);
-		glVertex3d(w / 2, h, 0);
-		glVertex3d(w / 2, 0, 0);
-
-		// top
-		_RED.apply();
-		glVertex3d(w / 2, h, 0);
-		glVertex3d(w / 2, h, -d);
-		glVertex3d(-w / 2, h, -d);
-		glVertex3d(-w / 2, h, 0);
-
-	glEnd();
-	// --- /draw
-	glPopMatrix();
-
-}
-
 
 void reshape2(int width, int height) {
 
@@ -140,26 +84,13 @@ void render_play_win() {
 	// perspective
 	reshape_play_win();
 
-	glMatrixMode(GL_MODELVIEW);
-
 	// render 
-	
-	_ball1.set_cam(&_play_cam);
-	//track1.set_cam(&_play_cam);
-	//track2.set_cam(&_play_cam);
-
-	//_play_cam.pos = _ball1.pos;
-	//_play_cam.pos.y += _ball1.size;
-	//_play_cam.pos.x += _ball1.size/2;
-	//_play_cam.look_at(_play_cam.pos + Vec3(1, -1, 0));
-
+	glMatrixMode(GL_MODELVIEW);
 	draw_axis2();
-	_ball1.draw();
+	_ball1.set_cam(&_play_cam); _ball1.draw();
 	real_track1.draw(&_play_cam);
-	//track1.draw();
-	//track1.draw3d();
-	//track2.draw3d();
-
+	
+	// flush
 	glutSwapBuffers();
 }
 

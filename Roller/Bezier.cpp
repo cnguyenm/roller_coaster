@@ -16,22 +16,6 @@ Bezier::Bezier(const std::vector<Vec3>& controls) : control_points(controls)
 	find_length();
 }
 
-void Bezier::set_points(std::vector<Vec3> controls)
-{
-	this->control_points = controls;
-}
-
-void Bezier::draw()
-{
-	glLineWidth(5.0f);
-	glBegin(GL_LINE_STRIP);
-	for (Vec3 p : points) {
-		glVertex3d(p.x, p.y, p.z);
-	}
-	glEnd();
-	glLineWidth(1.0f);
-}
-
 void Bezier::draw(Camera * cam)
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -48,42 +32,6 @@ void Bezier::draw(Camera * cam)
 		glEnd();
 	glLineWidth(1.0f);
 	glPopMatrix();
-}
-
-void Bezier::draw3d()
-{
-	// check
-	if (control_points.size() < 3) return;
-
-	Vec3 p, p1;
-	double t;
-	int n = control_points.size() - 1;
-	int k = 0;
-
-	// draw
-	color.apply();
-	glBegin(GL_QUAD_STRIP);  // better performance than GL_POINTS
-
-	for (t = 0.0; t < 1.0; t += 0.1) {
-
-		p = Vec3(0, 0, 0);
-
-		// calc point for each t
-		for (unsigned int i = 0; i < control_points.size(); i++) {
-			// p = p0*B(3,0) + p1*B(3,1) + ... + pn*B(n,n)
-			// p0 * B(n,k) = p0 * nCk * (1-t)^(n-k) * t^k
-			k = i;
-			p1 = control_points[i] * BB(n, k, t);
-			p += p1;
-
-		}
-
-		// draw point		
-		//glVertex3d(p.x, p.y, p.z);
-		glVertex3d(p.x, p.y, p.z - 0.25);
-		glVertex3d(p.x, p.y, p.z + 0.25);
-	}
-	glEnd();
 }
 
 Vec3 Bezier::interp(Vec3 n1, Vec3 n2, float lambda)
@@ -185,12 +133,6 @@ void Bezier::set_start(Vec3 pos)
 	double dist2 = (control_points[3] - pos).magn();
 	if (dist1 < dist2) t0 = 0;
 	else t0 = 1;
-}
-
-double Bezier::let_ball_run(double dist, GameObject * obj)
-{
-	
-	return 0.0;
 }
 
 double Bezier::ball_run(double dist, GameObject * obj)

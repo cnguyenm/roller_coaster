@@ -13,11 +13,6 @@ void Ball::set_cam(Camera * cam)
 	this->cam = cam;
 }
 
-void Ball::set_obstacle(Obstacle * obs)
-{
-	this->obstacle = obs;
-}
-
 void Ball::set_track(Track * track)
 {
 	this->track = track;
@@ -150,11 +145,11 @@ void Ball::run_on_track() {
 	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
 	vel = vel + accel * t;
 	double dist = (vel * t).magn();
-	printf("vel=%.2f|", vel.magn());
-	printf("cos_a=%.2f|", cos_a);
-	printf("accel=(%.2f,%.2f,%.2f)|vel=(%.2f,%.2f,%.2f)\n", 
-		accel.x, accel.y, accel.z, 
-		vel.x, vel.y,vel.z);
+	//printf("vel=%.2f|", vel.magn());
+	//printf("cos_a=%.2f|", cos_a);
+	//printf("accel=(%.2f,%.2f,%.2f)|vel=(%.2f,%.2f,%.2f)\n", 
+	//	accel.x, accel.y, accel.z, 
+	//	vel.x, vel.y,vel.z);
 
 	// convert dist_travel to next_pos on curve
 	Vec3 next_pos;
@@ -166,68 +161,8 @@ void Ball::run_on_track() {
 	}
 }
 
-void Ball::run_on_plane()
-{
-	// find accel, vel at time t0
-	Hit hit;
-	if (!plane->is_collide(*this, hit)) return;
-
-	// find accel
-	double t = _DELTA_TIME / 1000.0;  // msec -> sec
-	accel = find_force(hit);
-
-	// convert vel to tangent direction
-	// find dist travel
-	double cos_a = Vec3::cos(vel, hit.tangent);
-	vel = (vel.magn() * cos_a) * hit.tangent.normalized();
-	vel = vel + accel * t;
-	double dist = (vel * t).magn();
-
-	// convert dist_travel to next_pos on curve
-	Vec3 next_pos;
-	if (plane->let_ball_run(dist, next_pos)) {
-		pos = next_pos;
-		pos.y += size;
-	}
-	else {		
-		on_track = false;	
-	}
-
-	printf("vel= %2.f, %.2f %.2f \n", vel.x, vel.y, vel.z);
-
-}
-
 void Ball::apply_gravity()
 {
 	this->accel = Vec3(0, -_GRAVITY_FORCE, 0);
-}
-
-void Ball::apply_collision()
-{
-	// hit base_ground
-	double error = 0.01;
-	if (pos.y < 0.0 + size + error) {
-		pos.y = 0.0 + this->size;
-	}
-
-	// if hit obstacle
-	Hit out_hit;
-	if (obstacle->is_collide(*this, out_hit)) {
-		//printf("hit\n");
-		pos		= out_hit.pos;
-		pos.y	+= this->size;
-		this->accel = find_force(out_hit) / weight;// F = ma
-
-		if (!on_ground) {
-			on_ground = true;
-			//this->vel = Vec3(0, 0, 0);  // reset vel
-			
-		}
-	}
-	else {
-		on_ground = false;
-		//printf("no hit\n");
-	}
-
 }
 

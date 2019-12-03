@@ -11,12 +11,6 @@ public:
 	Camera();
 	void apply();
 
-	// affect camera+center position
-	void move_left(double value);
-	void move_right(double value);
-	void move_up(double value);
-	void move_down(double value);
-
 	// move relative with cur pos
 	void move_relative(double x, double y, double z);
 	void rotate_around_yaxis(double value);

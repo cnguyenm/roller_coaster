@@ -17,16 +17,12 @@ public:
 	Bezier();
 	Bezier(const std::vector<Vec3>& controls);
 
-	void set_points(std::vector<Vec3> controls);
-	void draw();
 	virtual void draw(Camera * cam);
-	void draw3d();
 	Vec3 get_point_on_curve(double t);
 	Vec3 get_derivative(double t);  // to get tangent at value t
 	
 	virtual double get_dist(Vec3 pos);   // get distance from a point
 	virtual void set_start(Vec3 pos);
-	virtual double let_ball_run(double dist, GameObject * obj);
 	virtual double ball_run(double dist, GameObject * obj);
 	virtual bool is_collide(GameObject obj, Hit & hit);
 
