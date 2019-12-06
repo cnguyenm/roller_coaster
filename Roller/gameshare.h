@@ -9,6 +9,7 @@ extern Color _WHITE;
 extern Color _BLUE;
 extern Color _YELLOW;
 extern Color _GREY;
+extern Color _PINK;
 extern double _PI;
 
   

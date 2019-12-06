@@ -61,7 +61,7 @@ void Track::draw(Camera * cam)
 void Track::reset()
 {
 	cur_component = 0;
-	component_list[0]->t0 = 0;
+	component_list[0]->t0 = 0.2;
 }
 
 void Track::free()

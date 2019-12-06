@@ -56,6 +56,7 @@ void Ball::reset_pos()
 	pos = init_pos;
 	vel = Vec3(0, 0, 0);
 	accel = Vec3(0, 0, 0);
+	on_track = true;
 }
 
 void Ball::update_move() {

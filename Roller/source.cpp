@@ -14,6 +14,10 @@ Track real_track1;
 
 extern GLUI *glui;
 
+void my_vertex3d(Vec3 vec3) {
+	glVertex3d(vec3.x, vec3.y, vec3.z);
+}
+
 void update_edit_window() {
 	glutSetWindow(_edit_win);
 	glutPostRedisplay();
@@ -118,27 +122,105 @@ void draw_pillar(Camera * cam) {
 	double radius = 5;
 	double u = radius / 2 + sqrt(radius);
 	double h = 0.5;
-
+	double w = 0.7;  // width
 	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
+	
 
-	// --- draw 
+	// --- pillar (front)
+	glPushMatrix();
 	glLoadIdentity();
 	cam->apply();
+	_PINK.apply();
+		glTranslated(0, 0, u-w);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
 
-	glLineWidth(5.0f);
+		glRotated( 90, 1, 0, 0);  // un-rotate
+		glTranslated(0, 0, 2*w);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+	glPopMatrix();
+
+	// --- pillar (back)
+	glPushMatrix();
+	glLoadIdentity();
+	cam->apply();
+		glTranslated(0, 0, -u-w);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+
+		glRotated(90, 1, 0, 0);  // un-rotate
+		glTranslated(0, 0, 2*w);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+	glPopMatrix();
+
+	// --- pillar (right)
+	glPushMatrix();
+	glLoadIdentity();
+	cam->apply();
+		glTranslated(u-w, 0, 0);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+
+		glRotated(90, 1, 0, 0);  // un-rotate
+		glTranslated(2*w, 0, 0);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+	glPopMatrix();
+
+	// --- pillar (left)
+	glPushMatrix();
+	glLoadIdentity();
+	cam->apply();
+		glTranslated(-u-w, 0, 0);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+
+		glRotated(90, 1, 0, 0);  // un-rotate
+		glTranslated(2*w, 0, 0);
+		glRotated(-90, 1, 0, 0);
+		glutSolidCylinder(0.25f, 28 * h, 10, 10);
+	glPopMatrix();
+
+	// --- draw bridges for those pillars
+	double h2 = 0.3;  // adjustment for bridges
+	std::vector<Vec3> starts = {
+		// front
+		{0, 11*h-h2,u-w}, {0,23*h-h2,u-w},
+		// back
+		{0, 5 * h-h2,-u-w}, {0,17*h-h2,-u-w},
+		// right
+		{u-w,14*h-h2,0}, {u-w, 26*h-h2,0},
+		// left
+		{-u-w, 8*h-h2,0}, {-u-w,20*h-h2,0}
+	};
+	std::vector<Vec3> ends = {
+		// front
+		{0, 11*h - h2,u+w}, {0,23*h-h2,u+w},
+		// back
+		{0, 5 * h - h2,-u + w}, {0,17*h-h2,-u+w},
+		// right
+		{u+w,14*h-h2,0}, {u+w, 26*h-h2,0},
+		// left
+		{-u+w, 8*h-h2,0}, {-u+w,20*h-h2,0}
+
+	};
+	
+
+	glPushMatrix();
+	glLoadIdentity();
+	cam->apply();
+	glLineWidth(10.0f);
 	glBegin(GL_LINES);
-	_BLUE.apply();
-		// front pillar
-		glVertex3d(0, 0, u);
-		glVertex3d(0, 23*h,  u);
-
-		// back pillar
-		glVertex3d(0, 0, -u);
-		glVertex3d(0, 28 * h, -u);
-
+	for (int i = 0; i < starts.size(); i++) {
+		my_vertex3d(starts[i]);
+		my_vertex3d(ends[i]);
+	}
 	glEnd();
 	glLineWidth(1.0f);
+	glPopMatrix();
+	
 }
 
 void draw_spin() {

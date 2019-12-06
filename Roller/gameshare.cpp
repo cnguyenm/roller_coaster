@@ -9,6 +9,7 @@ Color _WHITE	= Color(1, 1, 1);
 Color _BLUE		= Color(0, 0, 1);
 Color _YELLOW	= Color(1, 1, 0);
 Color _GREY		= Color(0.5, 0.6, 0.7);
+Color _PINK		= Color(1, 0, 1);
 
 double _PI = 3.14;
 
